@@ -33,7 +33,7 @@ func (command *SimpleCommand) GetShell() sfinterfaces.IShell {
 }
 
 //Get and Set the input for the command
-func (command *SimpleCommand) SetCommandInput(input shellframework.ICommandInput) {
+func (command *SimpleCommand) SetCommandInput(input sfinterfaces.ICommandInput) {
 	command.commandinput = input
 }
 
