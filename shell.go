@@ -2,6 +2,8 @@ package simpleshell
 
 import (
 	"os"
+
+	"github.com/eshu0/shellframework/interfaces"
 )
 
 type SimpleShell struct {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/eiannone/keyboard"
-	"github.com/eshu0/shellframework"
+	"github.com/eshu0/shellframework/interfaces"
 )
 
 /*
@@ -67,10 +67,10 @@ func (shell *SimpleShell) PrintInputMessage() {
 // SHELL Processing
 //
 
-func (shell *SimpleShell) ParseInput(input string) []shellframework.ICommandInput {
+func (shell *SimpleShell) ParseInput(input string) []sfinterfaces.ICommandInput {
 
-	var ecs []shellframework.ICommandInput
-	ecs = []shellframework.ICommandInput{}
+	var ecs []sfinterfaces.ICommandInput
+	ecs = []sfinterfaces.ICommandInput{}
 	log := *shell.GetLog()
 	log.LogPrintlnf("ParseInput(): Parsing '%s' with length %d", input, len(input))
 
@@ -433,13 +433,13 @@ func (shell *SimpleShell) Run() {
 //
 // Commands adding etc
 //
-func (shell *SimpleShell) AddCommand(cmd shellframework.ICommand) {
+func (shell *SimpleShell) AddCommand(cmd sfinterfaces.ICommand) {
 	// append the command to the shell
 	shell.commands = append(shell.commands, cmd)
 }
 
 //Adds a Simple Command to the Shell
-func (shell *SimpleShell) AddCommands(commands []shellframework.ICommand) {
+func (shell *SimpleShell) AddCommands(commands []sfinterfaces.ICommand) {
 	// walk thoguh the commands passed in
 	for _, cmd := range commands {
 		// make sure this pointer is valid
@@ -451,16 +451,16 @@ func (shell *SimpleShell) AddCommands(commands []shellframework.ICommand) {
 
 }
 
-func (shell *SimpleShell) AddNewCommandWithFlags(name string, description string, operator func(command shellframework.ICommand) shellframework.ICommandResult, flags []shellframework.IFlag) {
+func (shell *SimpleShell) AddNewCommandWithFlags(name string, description string, operator func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult, flags []sfinterfaces.IFlag) {
 	shell.AddCommand(shell.NewCommand(name, description, operator, flags))
 }
 
-func (shell *SimpleShell) AddNewCommand(name string, description string, operator func(command shellframework.ICommand) shellframework.ICommandResult) {
-	flags := []shellframework.IFlag{}
+func (shell *SimpleShell) AddNewCommand(name string, description string, operator func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult) {
+	flags := []sfinterfaces.IFlag{}
 	shell.AddCommand(shell.NewCommand(name, description, operator, flags))
 }
 
-func (shell *SimpleShell) NewCommand(name string, description string, operator func(command shellframework.ICommand) shellframework.ICommandResult, flags []shellframework.IFlag) shellframework.ICommand {
+func (shell *SimpleShell) NewCommand(name string, description string, operator func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult, flags []sfinterfaces.IFlag) sfinterfaces.ICommand {
 
 	sc := &SimpleCommand{}
 	sc.name = name
