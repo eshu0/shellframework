@@ -2,6 +2,7 @@ package simpleshell
 
 import (
 	"flag"
+	"github.com/eshu0/shellframework/interfaces"
 )
 
 type SimpleFlags struct {
