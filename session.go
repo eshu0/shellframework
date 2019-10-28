@@ -1,8 +1,10 @@
-package simpleshell
+package shellframework
 
 import (
 	"math/rand"
 	"time"
+
+	"github.com/eshu0/shellframework/interfaces"
 )
 
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")

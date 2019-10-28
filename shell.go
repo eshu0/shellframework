@@ -1,4 +1,4 @@
-package simpleshell
+package shellframework
 
 import (
 	"os"
