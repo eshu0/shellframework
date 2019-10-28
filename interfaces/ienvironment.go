@@ -1,4 +1,4 @@
-package shellframework
+package sfintercaes
 
 type IEnvironment interface {
 	GetShell() IShell

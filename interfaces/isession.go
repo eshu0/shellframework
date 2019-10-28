@@ -1,4 +1,4 @@
-package shellframework
+package sfintercaes
 
 // the session for the Shell
 type ISession interface {

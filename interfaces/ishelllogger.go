@@ -1,4 +1,4 @@
-package shellframework
+package sfintercaes
 
 // main interface for the ShellLogger
 type IShellLogger interface {
