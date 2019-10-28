@@ -1,6 +1,6 @@
-# Simple shell
+# Shell Framework
 
-Simple in-memory Golang Shell
+Framework for a simple in-memory Golang Shell
 
 This mainly is for small interactive CLI applications
 

@@ -3,8 +3,6 @@ package simpleshell
 import (
 	"math/rand"
 	"time"
-
-	"github.com/eshu0/shellframework"
 )
 
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -16,7 +14,7 @@ type SimpleSession struct {
 // this is a very simple random string
 // this is just to uniquely identify each session
 // this is meant to be over written if needs be
-func NewSimpleSession() shellframework.ISession {
+func NewSimpleSession() sfinterfaces.ISession {
 	ss := new(SimpleSession)
 
 	rand.Seed(time.Now().UnixNano())

@@ -2,15 +2,13 @@ package simpleshell
 
 import (
 	"flag"
-
-	"github.com/eshu0/shellframework"
 )
 
 type SimpleFlags struct {
 	flagset     *flag.FlagSet
-	command     shellframework.ICommand
-	parsedflags map[string]shellframework.IFlag
-	flags       []shellframework.IFlag
+	command     sfinterfaces.ICommand
+	parsedflags map[string]sfinterfaces.IFlag
+	flags       []sfinterfaces.IFlag
 }
 
 type SimpleFlag struct {
@@ -30,7 +28,7 @@ type SimpleFlag struct {
 	//parent SimpleFlags
 }
 
-func NewBoolFlag(name string, defaultvalue bool, usage string) shellframework.IFlag {
+func NewBoolFlag(name string, defaultvalue bool, usage string) sfinterfaces.IFlag {
 	sf := &SimpleFlag{}
 	sf.name = name
 	sf.defaultbvalue = defaultvalue
@@ -39,7 +37,7 @@ func NewBoolFlag(name string, defaultvalue bool, usage string) shellframework.IF
 	return sf
 }
 
-func NewIntFlag(name string, defaultvalue int, usage string) shellframework.IFlag {
+func NewIntFlag(name string, defaultvalue int, usage string) sfinterfaces.IFlag {
 	sf := &SimpleFlag{}
 	sf.name = name
 	sf.defaultivalue = defaultvalue
@@ -48,7 +46,7 @@ func NewIntFlag(name string, defaultvalue int, usage string) shellframework.IFla
 	return sf
 }
 
-func NewStringFlag(name string, defaultvalue string, usage string) shellframework.IFlag {
+func NewStringFlag(name string, defaultvalue string, usage string) sfinterfaces.IFlag {
 	sf := &SimpleFlag{}
 	sf.name = name
 	sf.defaultsvalue = defaultvalue
@@ -116,15 +114,15 @@ func (flg *SimpleFlag) SetFlagValue(toread *flag.FlagSet) {
 
 // flags after here
 
-func (sflgs *SimpleFlags) Parsedflags() map[string]shellframework.IFlag {
+func (sflgs *SimpleFlags) Parsedflags() map[string]sfinterfaces.IFlag {
 	return sflgs.parsedflags
 }
 
-func (sflgs *SimpleFlags) GetFlags() []shellframework.IFlag {
+func (sflgs *SimpleFlags) GetFlags() []sfinterfaces.IFlag {
 	return sflgs.flags
 }
 
-func (sflgs *SimpleFlags) SetFlags(flgs []shellframework.IFlag) {
+func (sflgs *SimpleFlags) SetFlags(flgs []sfinterfaces.IFlag) {
 	sflgs.flags = flgs
 }
 
@@ -132,11 +130,11 @@ func (flgs *SimpleFlags) GetFlagSet() *flag.FlagSet {
 	return flgs.flagset
 }
 
-func (flgs *SimpleFlags) SetCommand(cmd shellframework.ICommand) {
+func (flgs *SimpleFlags) SetCommand(cmd sfinterfaces.ICommand) {
 	flgs.command = cmd
 }
 
-func (flgs *SimpleFlags) GetCommand() shellframework.ICommand {
+func (flgs *SimpleFlags) GetCommand() sfinterfaces.ICommand {
 	return flgs.command
 }
 
@@ -154,7 +152,7 @@ func (flgs *SimpleFlags) Parse() {
 	flags := flgs.GetFlags()
 
 	// parsed flags
-	flgs.parsedflags = make(map[string]shellframework.IFlag)
+	flgs.parsedflags = make(map[string]sfinterfaces.IFlag)
 
 	log.LogPrintlnf("Parse(): Number of flags %d for %s ", len(flags), command.GetName())
 
