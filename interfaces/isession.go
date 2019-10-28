@@ -1,4 +1,4 @@
-package sfintercaes
+package sfinterfaces
 
 // the session for the Shell
 type ISession interface {

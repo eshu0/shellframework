@@ -1,4 +1,4 @@
-package sfintercaes
+package sfinterfaces
 
 type IEnvironment interface {
 	GetShell() IShell

@@ -1,4 +1,4 @@
-package sfintercaes
+package sfinterfaces
 
 import (
 	"os"
