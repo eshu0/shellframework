@@ -27,7 +27,7 @@ func NewShellLogger(logger kitlog.Logger) ShellLogger {
 }
 
 //func (ssl *ShellLogger) SetLogPrefix(prefix string) {
-	//ssl.log = kitlog.With(ssl.log, "session_id", session.ID())
+//ssl.log = kitlog.With(ssl.log, "session_id", session.ID())
 //}
 
 func (ssl *ShellLogger) SetLog(log kitlog.Logger) {
@@ -49,19 +49,19 @@ func (ssl *ShellLogger) GetLogLevel() kitlevel.Option {
 }
 
 // the logging functions are here
-func (ssl *ShellLogger) LogDebug(data ...interface{}) {
-	kitlevel.Debug(ssl.log).Log("data", fmt.Sprintf("%s", data))
+func (ssl *ShellLogger) LogDebug(cmd string, data ...interface{}) {
+	kitlevel.Debug(ssl.log).Log("cmd", cmd, "data", fmt.Sprintf("%s", data))
 }
 
-func (ssl *ShellLogger) LogWarn(data ...interface{}) {
-	kitlevel.Warn(ssl.log).Log("data", fmt.Sprintf("%s", data))
+func (ssl *ShellLogger) LogWarn(cmd string, data ...interface{}) {
+	kitlevel.Warn(ssl.log).Log("cmd", cmd, "data", fmt.Sprintf("%s", data))
 }
 
-func (ssl *ShellLogger) LogInfo(data ...interface{}) {
-	kitlevel.Info(ssl.log).Log("data", fmt.Sprintf("%s", data))
+func (ssl *ShellLogger) LogInfo(cmd string, data ...interface{}) {
+	kitlevel.Info(ssl.log).Log("cmd", cmd, "data", fmt.Sprintf("%s", data))
 }
-func (ssl *ShellLogger) LogError(data ...interface{}) {
-	kitlevel.Error(ssl.log).Log("data", fmt.Sprintf("%s", data))
+func (ssl *ShellLogger) LogError(cmd string, data ...interface{}) {
+	kitlevel.Error(ssl.log).Log("cmd", cmd, "data", fmt.Sprintf("%s", data))
 }
 
 // These all print at Info level which displays in the log by default
@@ -70,7 +70,7 @@ func (ssl *ShellLogger) LogPrintln(msg string) {
 }
 
 func (ssl *ShellLogger) LogPrint(msg string) {
-	ssl.LogInfo("msg", msg)
+	ssl.LogInfo("LogPrint", msg)
 }
 
 func (ssl *ShellLogger) LogPrintlnf(msg string, a ...interface{}) {
@@ -89,14 +89,13 @@ func (ssl *ShellLogger) OpenSessionFileLog(session sfinterfaces.ISession) *os.Fi
 	}
 
 	//logger :=
-	logger := kitlog.NewLogfmtLogger(f) //(f, session.ID()+" ", log.LstdFlags)
-	logger = kitlog.With(logger, "session_id", session.ID(), "ts", kitlog.DefaultTimestampUTC)//, "caller", kitlog.DefaultCaller)
+	logger := kitlog.NewLogfmtLogger(f)                                                        //(f, session.ID()+" ", log.LstdFlags)
+	logger = kitlog.With(logger, "session_id", session.ID(), "ts", kitlog.DefaultTimestampUTC) //, "caller", kitlog.DefaultCaller)
 
 	// check log is valid
 	if logger == nil {
 		panic("logger is nil")
 	}
-
 
 	ssl.log = logger
 

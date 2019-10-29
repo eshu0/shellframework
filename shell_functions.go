@@ -65,7 +65,7 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 	var ecs []sfinterfaces.ICommandInput
 	ecs = []sfinterfaces.ICommandInput{}
 	log := *shell.GetLog()
-	log.LogPrintlnf("ParseInput(): Parsing '%s' with length %d", input, len(input))
+	log.LogDebug("ParseInput()", "Parsing '%s' with length %d", input, len(input))
 
 	var ecsposition int
 	var commandfound bool
@@ -93,7 +93,7 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 	for pos, char := range textr {
 
 		if pos == 0 && char == '#' {
-			log.LogPrintln("ParseInput():Comment found at the beggining this whole input is a comment finish parsing ")
+			log.LogDebug("ParseInput()", "Comment found at the beggining this whole input is a comment finish parsing ")
 			break
 		} else {
 
@@ -106,23 +106,23 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 				ci := CommandInput{}
 				ecs = append(ecs, &ci)
 
-				log.LogPrintln("ParseInput(): appended first command")
+				log.LogDebug("ParseInput()", "appended first command")
 			}
 
 			//shell.LogPrintlnf("character %c at position %d", char, pos)
 
 			if char == '#' {
-				log.LogPrintlnf("ParseInput(): '%c' - Comment indentifier found at '%d' parsing finished", char, pos)
+				log.LogDebug("ParseInput()", "'%c' - Comment indentifier found at '%d' parsing finished", char, pos)
 				break
 			}
 
 			// run out of string
 			if len(input)-1 == pos {
-				log.LogPrintlnf("run out of string to parse")
+				log.LogDebug("ParseInput()", "run out of string to parse")
 
 				if !commandfound {
 					cmndname := string(textr[commandfoundat : pos+1])
-					log.LogPrintlnf("Parsed command '%s' from '%s'", cmndname, input)
+					log.LogDebug("ParseInput()", "Parsed command '%s' from '%s'", cmndname, input)
 					ecs[ecsposition].SetCommandName(cmndname)
 
 				} else {
@@ -138,14 +138,14 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 					}
 
 					arg := string(textr[s : e+1])
-					log.LogPrintlnf("ParseInput(): Found argument terminator: argument read: %s", arg)
+					log.LogDebug("ParseInput()", "Found argument terminator: argument read: %s", arg)
 					pargs := ecs[ecsposition].GetArgs()
 					pargs = append(pargs, arg)
 					ecs[ecsposition].SetArgs(pargs)
 				}
 
 				rawi := string(textr[rawpos : pos+1])
-				log.LogPrintlnf("Parsed rawinput '%s' from '%s'", rawi, input)
+				log.LogDebug("ParseInput()", "Parsed rawinput '%s' from '%s'", rawi, input)
 				ecs[ecsposition].SetRawInput(rawi)
 
 				break
@@ -155,9 +155,9 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 				// we are looking for a command
 				if !commandfound {
 					if char == ' ' {
-						log.LogPrintlnf("Final character %c at position %d is end of command", char, pos)
+						log.LogDebug("ParseInput()", "Final character %c at position %d is end of command", char, pos)
 						cmndname := string(textr[commandfoundat : pos+1])
-						log.LogPrintlnf("Parsed command '%s' from '%s'", cmndname, input)
+						log.LogDebug("ParseInput()", "Parsed command '%s' from '%s'", cmndname, input)
 						ecs[ecsposition].SetCommandName(cmndname)
 						commandfoundat = pos
 						commandfound = true
@@ -170,10 +170,10 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 
 					if char == '"' {
 						if openqoute {
-							log.LogPrintlnf("ParseInput(): Open qoute found at '%d' this is closing", pos)
+							log.LogDebug("ParseInput()", "Open qoute found at '%d' this is closing", pos)
 							openqoute = false
 						} else {
-							log.LogPrintlnf("ParseInput(): Open qoute found at '%d' this is opening", pos)
+							log.LogDebug("ParseInput()", "Open qoute found at '%d' this is opening", pos)
 							openqoute = true
 						}
 						continue
@@ -185,21 +185,21 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 						if char == ' ' {
 							s := lastargat
 							e := pos
-							log.LogPrintlnf("ParseInput(): e = %d", e)
+							log.LogDebug("ParseInput()", "e = %d", e)
 
 							if textr[lastargat] == '"' {
 								s = s + 1
 							}
-							log.LogPrintlnf("ParseInput(): textr[e] = %s", string(textr[e]))
+							log.LogDebug("ParseInput()", "textr[e] = %s", string(textr[e]))
 
 							if textr[e-1] == '"' {
-								log.LogPrintlnf("ParseInput(): minus e = %d", e)
+								log.LogDebug("ParseInput()", "minus e = %d", e)
 								e = e - 1
 							}
 
-							log.LogPrintlnf("ParseInput(): e = %d", e)
+							log.LogDebug("ParseInput()", "e = %d", e)
 							arg := string(textr[s:e])
-							log.LogPrintlnf("ParseInput(): Found argument terminator: argument read: %s", arg)
+							log.LogDebug("ParseInput()", "Found argument terminator: argument read: %s", arg)
 							pargs := ecs[ecsposition].GetArgs()
 							pargs = append(pargs, arg)
 							ecs[ecsposition].SetArgs(pargs)
@@ -207,22 +207,22 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 						}
 
 						if char == '|' {
-							log.LogPrintlnf("ParseInput(): Pipe found at '%d' - new command input created", pos)
-							log.LogPrintlnf("ParseInput(): Append %s ", ecs[ecsposition].GetCommandName())
+							log.LogDebug("ParseInput()", "Pipe found at '%d' - new command input created", pos)
+							log.LogDebug("ParseInput()", "Append %s ", ecs[ecsposition].GetCommandName())
 							ci := CommandInput{}
 							ecs = append(ecs, &ci)
 							ecsposition++
 							commandfound = false
 
 							rawi := string(textr[rawpos : pos+1])
-							log.LogPrintlnf("Parsed rawinput '%s' from '%s'", rawi, input)
+							log.LogDebug("ParseInput()", "Parsed rawinput '%s' from '%s'", rawi, input)
 							ecs[ecsposition].SetRawInput(rawi)
 
 							//this is zero on the first run so we need it to be past the pipe
 							commandfoundat = pos + 1 // pos is the pipe command is at the next item
 							lastargat = pos + 1
 							rawpos = pos + 1
-							log.LogPrintlnf("ParseInput(): Created new command and incremented to %d ", ecsposition)
+							log.LogDebug("ParseInput()", "Created new command and incremented to %d ", ecsposition)
 
 						}
 					}

@@ -47,7 +47,7 @@ func (command *Command) Match(incmd sfinterfaces.ICommandInput) bool {
 	log := *shell.GetLog()
 
 	if strings.HasPrefix(incmd.GetLowerCommandName(), strings.ToLower(command.GetName())) {
-		log.LogPrintlnf("Match(): Command '%s' matched '%s'", command.GetName(), incmd.GetLowerCommandName())
+		log.LogDebug("Match()", "Command '%s' matched '%s'", command.GetName(), incmd.GetLowerCommandName())
 		return true
 	}
 
@@ -71,7 +71,7 @@ func (command *Command) Process() sfinterfaces.ICommandResult {
 
 	flgs := command.GetFlags()
 
-	log.LogPrintln("Process(): Parsing the flags")
+	log.LogDebug("Process()", "Parsing the flags")
 	flgs.Parse()
 	/*
 
@@ -104,7 +104,14 @@ func (command *Command) Process() sfinterfaces.ICommandResult {
 			shell.LogPrintln("Process(): Not parsing flagset")
 		}
 	*/
-	return command.operator(command)
+	log.LogDebug("Process()", "running command %s", command.GetName())
+	result := command.operator(command)
+	log.LogDebug("Process()", "finished command %s", command.GetName())
+	log.LogDebug("Process()", "result - Successful %t", result.Sucessful())
+	log.LogDebug("Process()", "result - ExitShell %t", result.ExitShell())
+	log.LogDebug("Process()", "result - Error %s", result.Err())
+	log.LogDebug("Process()", "result - Result %s", result.Result())
+	return result
 }
 
 /*

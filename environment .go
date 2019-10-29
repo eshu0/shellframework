@@ -48,7 +48,6 @@ func (env *Environment) Print() {
 	}
 
 	shell := env.GetShell()
-	//log := *shell.GetLog()
 	namevalues := env.GetNameValues()
 
 	if namevalues == nil {
@@ -144,16 +143,16 @@ func (env *Environment) SaveToFile(path string) {
 		namevalues := env.GetNameValues()
 		bytes, err := json.MarshalIndent(namevalues, "", "\t") //json.Marshal(p)
 		if err != nil {
-			log.LogPrintlnf("SaveToFile(): Marshal json for %s failed with %s ", path, err.Error())
+			log.LogError("SaveToFile()", "Marshal json for %s failed with %s ", path, err.Error())
 			return
 		}
 
 		err = ioutil.WriteFile(path+".json", bytes, 0644)
 		if err != nil {
-			log.LogPrintlnf("SaveToFile(): Saving %s failed with %s ", path, err.Error())
+			log.LogError("SaveToFile()", "Saving %s failed with %s ", path, err.Error())
 		}
 	} else {
-		log.LogPrintlnf("SaveToFile(): '%s' was not found to save", path)
+		log.LogError("SaveToFile()", "'%s' was not found to save", path)
 	}
 }
 
@@ -174,7 +173,7 @@ func (env *Environment) LoadFile(path string) {
 		filepath := path + ".json"
 		bytes, err := ioutil.ReadFile(filepath) //ReadAll(jsonFile)
 		if err != nil {
-			log.LogPrintlnf("LoadFile(): Reading '%s' failed with %s ", filepath, err.Error())
+			log.LogError("LoadFile()", "Reading '%s' failed with %s ", filepath, err.Error())
 			return
 		}
 		var f map[string]EnvironmentVariable
@@ -184,12 +183,12 @@ func (env *Environment) LoadFile(path string) {
 		err = json.Unmarshal(bytes, &f)
 
 		if err != nil {
-			log.LogPrintlnf("LoadFile(): Loading %s failed with %s ", filepath, err.Error())
+			log.LogError("LoadFile()", " Loading %s failed with %s ", filepath, err.Error())
 			return
 		}
 
 		for key, ev := range f {
-			log.LogPrintlnf("LoadFile(): SetVariable %s with %s ", key, strings.Join(ev.GetValues(), ","))
+			log.LogError("LoadFile()", "SetVariable %s with %s ", key, strings.Join(ev.GetValues(), ","))
 			env.SetVariable(env.MakeMultiVariable(key, ev.GetValues()))
 		}
 
@@ -218,7 +217,7 @@ func (env *Environment) LoadFile(path string) {
 			}
 		*/
 	} else {
-		log.LogPrintlnf("LoadFile(): '%s' was not found to load", path)
+		log.LogError("LoadFile()", "'%s' was not found to load", path)
 	}
 }
 
