@@ -651,7 +651,7 @@ func (shell *Shell) RegisterCommandNewBoolFlag(cmd string, name string, defaultv
 	sf.usage = usage
 	sf.flagtype = 2
 
-	for _, registeredcmd := range shell.commands {
+	for i, registeredcmd := range shell.commands {
 		// make sure this pointer is valid
 		if !PointerInvalid(registeredcmd) {
 			// use this method to add the simple command
@@ -666,7 +666,7 @@ func (shell *Shell) RegisterCommandNewBoolFlag(cmd string, name string, defaultv
 				flgs.SetFlags(flags)
 				// finished setting the list
 
-				registeredcmd.SetFlags(flgs)
+				shell.commands[i].SetFlags(flgs)
 				return
 			}
 		}
@@ -680,7 +680,7 @@ func (shell *Shell) RegisterCommandNewIntFlag(cmd string, name string, defaultva
 	sf.usage = usage
 	sf.flagtype = 3
 
-	for _, registeredcmd := range shell.commands {
+	for i, registeredcmd := range shell.commands {
 		// make sure this pointer is valid
 		if !PointerInvalid(registeredcmd) {
 			// use this method to add the simple command
@@ -695,7 +695,7 @@ func (shell *Shell) RegisterCommandNewIntFlag(cmd string, name string, defaultva
 				flgs.SetFlags(flags)
 				// finished setting the list
 
-				registeredcmd.SetFlags(flgs)
+				shell.commands[i].SetFlags(flgs)
 				return
 			}
 		}
@@ -709,7 +709,7 @@ func (shell *Shell) RegisterCommandNewStringFlag(cmd string, name string, defaul
 	sf.usage = usage
 	sf.flagtype = 1
 
-	for _, registeredcmd := range shell.commands {
+	for i, registeredcmd := range shell.commands {
 		// make sure this pointer is valid
 		if !PointerInvalid(registeredcmd) {
 			// use this method to add the simple command
@@ -724,7 +724,7 @@ func (shell *Shell) RegisterCommandNewStringFlag(cmd string, name string, defaul
 				flgs.SetFlags(flags)
 				// finished setting the list
 
-				registeredcmd.SetFlags(flgs)
+				shell.commands[i].SetFlags(flgs)
 				return
 			}
 		}
