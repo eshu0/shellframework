@@ -29,6 +29,14 @@ func (ssl *SimpleShellLog) SetLogPrefix(prefix string) {
 	//ssl.log = kitlog.With(ssl.log, "session_id", session.ID())
 }
 
+func (ssl *SimpleShellLog) SetLog(log kitlog.Logger) {
+	ssl.log = log
+}
+
+func (ssl *SimpleShellLog) GetLog() kitlog.Logger {
+	return ssl.log
+}
+
 func (ssl *SimpleShellLog) SetLogLevel(lvl int) {
 	ssl.loglevel = lvl
 }
