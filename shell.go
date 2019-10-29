@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/eshu0/shellframework/interfaces"
+	"github.com/eshu0/shellframework/defaultcmds"
 )
 
 type Shell struct {
@@ -33,6 +34,21 @@ func NewShell(session sfinterfaces.ISession, In *os.File, Out *os.File, Err *os.
 	shell.out = Out
 	shell.err = Err
 	shell.log = &logfile
+
+	// Add the default commands
+	shell.AddNewCommand("man", "Manual command similar to linux/unix systems", man)
+	shell.AddNewCommand("help", "Help command", help)
+	shell.AddNewCommand("exit", "Exit terminal command", exit)
+	shell.AddNewCommand("cmd", "Commands command - jinx!", cmd)
+
+	Flags := []sfinterfaces.IFlag{}
+	//flg :=
+	Flags = append(Flags, shellframework.NewStringFlag("key", "", "Sets a string value"))
+	Flags = append(Flags, shellframework.NewStringFlag("value", "", "Sets a string value"))
+	Flags = append(Flags, shellframework.NewBoolFlag("list", false, "List Environment Variables"))
+
+	shell.AddNewCommandWithFlags("env", "Environment command", env, Flags)
+	shell.AddNewCommand("echo", "Echo text to terminal", echo)
 
 	return shell
 }
