@@ -7,7 +7,6 @@ import (
 // this is the Shell version
 const Version = "0.1"
 
-
 // main interface for the Shell
 // i am human so most likely i have forgetten something
 type IShell interface {
@@ -41,10 +40,19 @@ type IShell interface {
 	// called during the run command
 	PrintInputMessage()
 
+	// add commands to command or commands to the list
 	AddCommand(cmd ICommand)
 	AddCommands(commands []ICommand)
 
+	// create a new command
 	NewCommand(name string, description string, operator func(command ICommand) ICommandResult, flags []IFlag) ICommand
-	AddNewCommand(name string, description string, operator func(command ICommand) ICommandResult)
-	AddNewCommandWithFlags(name string, description string, operator func(command ICommand) ICommandResult, flags []IFlag)
+
+	// register a new command
+	RegisterNewCommand(name string, description string, operator func(command ICommand) ICommandResult)
+	RegisterNewCommandWithFlags(name string, description string, operator func(command ICommand) ICommandResult, flags []IFlag)
+
+	// register a single flag to a command
+	RegisterCommandNewIntFlag(cmd string, name string, defaultvalue int, usage string)
+	RegisterCommandNewBoolFlag(cmd string, name string, defaultvalue bool, usage string)
+	RegisterCommandNewStringFlag(cmd string, name string, defaultvalue string, usage string)
 }
