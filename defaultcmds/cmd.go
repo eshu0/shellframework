@@ -1,4 +1,4 @@
-package defaultcmds
+package dcmds
 
 import (
 	"github.com/eshu0/shellframework"
@@ -6,7 +6,7 @@ import (
 )
 
 // Command
-func cmd(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
+func Cmd(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 
 	shell := command.GetShell()
 	log := *shell.GetLog()

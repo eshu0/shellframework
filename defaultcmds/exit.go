@@ -1,4 +1,4 @@
-package defaultcmds
+package dcmds
 
 import (
 	"github.com/eshu0/shellframework"
@@ -6,7 +6,7 @@ import (
 )
 
 //Exit the terminal
-func exit(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
+func Exit(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 	shell := command.GetShell()
 	log := *shell.GetLog()
 
