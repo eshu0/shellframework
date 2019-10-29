@@ -2,10 +2,15 @@ package sfinterfaces
 
 import (
 	"os"
+
+	kitlog "github.com/go-kit/kit/log"
 )
 
 // main interface for the ShellLogger
 type IShellLogger interface {
+	// logging
+	GetLog() *kitlog.Logger
+	SetLog(log kitlog.Logger)
 
 	//log functions
 	GetLogLevel() int
@@ -24,5 +29,5 @@ type IShellLogger interface {
 	LogPrint(msg string)
 	LogPrintf(msg string, a ...interface{})
 
-	OpenSessionFileLog(session ISession) (*os.File)
+	OpenSessionFileLog(session ISession) *os.File
 }
