@@ -19,6 +19,10 @@ type IFlags interface {
 	SetFlags(flgs []IFlag)
 
 	Parse()
+
+	NewIntFlag(name string, defaultvalue int, usage string)
+	NewBoolFlag(name string, defaultvalue bool, usage string)
+	NewStringFlag(name string, defaultvalue string, usage string)
 }
 
 // I'd like to replace this with the flags
