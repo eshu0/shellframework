@@ -9,7 +9,7 @@ import (
 // main interface for the ShellLogger
 type IShellLogger interface {
 	// logging
-	GetLog() *kitlog.Logger
+	GetLog() kitlog.Logger
 	SetLog(log kitlog.Logger)
 
 	//log functions
