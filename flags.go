@@ -6,14 +6,14 @@ import (
 	"github.com/eshu0/shellframework/interfaces"
 )
 
-type SimpleFlags struct {
+type CommandFlags struct {
 	flagset     *flag.FlagSet
 	command     sfinterfaces.ICommand
 	parsedflags map[string]sfinterfaces.IFlag
 	flags       []sfinterfaces.IFlag
 }
 
-type SimpleFlag struct {
+type CommandFlag struct {
 	name  string
 	usage string
 
@@ -27,11 +27,11 @@ type SimpleFlag struct {
 	foundsvalue *string
 	foundivalue *int
 
-	//parent SimpleFlags
+	//parent CommandFlags
 }
 
 func NewBoolFlag(name string, defaultvalue bool, usage string) sfinterfaces.IFlag {
-	sf := &SimpleFlag{}
+	sf := &CommandFlag{}
 	sf.name = name
 	sf.defaultbvalue = defaultvalue
 	sf.usage = usage
@@ -40,7 +40,7 @@ func NewBoolFlag(name string, defaultvalue bool, usage string) sfinterfaces.IFla
 }
 
 func NewIntFlag(name string, defaultvalue int, usage string) sfinterfaces.IFlag {
-	sf := &SimpleFlag{}
+	sf := &CommandFlag{}
 	sf.name = name
 	sf.defaultivalue = defaultvalue
 	sf.usage = usage
@@ -49,7 +49,7 @@ func NewIntFlag(name string, defaultvalue int, usage string) sfinterfaces.IFlag 
 }
 
 func NewStringFlag(name string, defaultvalue string, usage string) sfinterfaces.IFlag {
-	sf := &SimpleFlag{}
+	sf := &CommandFlag{}
 	sf.name = name
 	sf.defaultsvalue = defaultvalue
 	sf.usage = usage
@@ -57,40 +57,40 @@ func NewStringFlag(name string, defaultvalue string, usage string) sfinterfaces.
 	return sf
 }
 
-func (flg *SimpleFlag) GetName() string {
+func (flg *CommandFlag) GetName() string {
 	return flg.name
 }
 
-func (flg *SimpleFlag) GetFlagType() int {
+func (flg *CommandFlag) GetFlagType() int {
 	return flg.flagtype
 }
 
-func (flg *SimpleFlag) GetUsage() string {
+func (flg *CommandFlag) GetUsage() string {
 	return flg.usage
 }
 
-func (flg *SimpleFlag) GetDefaultBoolValue() bool {
+func (flg *CommandFlag) GetDefaultBoolValue() bool {
 	return flg.defaultbvalue
 }
 
-func (flg *SimpleFlag) GetDefaultStringValue() string {
+func (flg *CommandFlag) GetDefaultStringValue() string {
 	return flg.defaultsvalue
 }
-func (flg *SimpleFlag) GetDefaultIntValue() int {
+func (flg *CommandFlag) GetDefaultIntValue() int {
 	return flg.defaultivalue
 }
 
-func (flg *SimpleFlag) GetStringValue() *string {
+func (flg *CommandFlag) GetStringValue() *string {
 	return flg.foundsvalue
 }
-func (flg *SimpleFlag) GetBoolValue() *bool {
+func (flg *CommandFlag) GetBoolValue() *bool {
 	return flg.foundbvalue
 }
-func (flg *SimpleFlag) GetIntValue() *int {
+func (flg *CommandFlag) GetIntValue() *int {
 	return flg.foundivalue
 }
 
-func (flg *SimpleFlag) SetFlagValue(toread *flag.FlagSet) {
+func (flg *CommandFlag) SetFlagValue(toread *flag.FlagSet) {
 
 	//flgs.parent.flagset = toread
 
@@ -116,31 +116,31 @@ func (flg *SimpleFlag) SetFlagValue(toread *flag.FlagSet) {
 
 // flags after here
 
-func (sflgs *SimpleFlags) Parsedflags() map[string]sfinterfaces.IFlag {
+func (sflgs *CommandFlags) Parsedflags() map[string]sfinterfaces.IFlag {
 	return sflgs.parsedflags
 }
 
-func (sflgs *SimpleFlags) GetFlags() []sfinterfaces.IFlag {
+func (sflgs *CommandFlags) GetFlags() []sfinterfaces.IFlag {
 	return sflgs.flags
 }
 
-func (sflgs *SimpleFlags) SetFlags(flgs []sfinterfaces.IFlag) {
+func (sflgs *CommandFlags) SetFlags(flgs []sfinterfaces.IFlag) {
 	sflgs.flags = flgs
 }
 
-func (flgs *SimpleFlags) GetFlagSet() *flag.FlagSet {
+func (flgs *CommandFlags) GetFlagSet() *flag.FlagSet {
 	return flgs.flagset
 }
 
-func (flgs *SimpleFlags) SetCommand(cmd sfinterfaces.ICommand) {
+func (flgs *CommandFlags) SetCommand(cmd sfinterfaces.ICommand) {
 	flgs.command = cmd
 }
 
-func (flgs *SimpleFlags) GetCommand() sfinterfaces.ICommand {
+func (flgs *CommandFlags) GetCommand() sfinterfaces.ICommand {
 	return flgs.command
 }
 
-func (flgs *SimpleFlags) Parse() {
+func (flgs *CommandFlags) Parse() {
 
 	command := flgs.GetCommand()
 

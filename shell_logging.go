@@ -8,7 +8,7 @@ import (
 	kitlog "github.com/go-kit/kit/log"
 )
 
-type SimpleShellLog struct {
+type ShellLogger struct {
 	loglevel int
 	log      kitlog.Logger
 }
@@ -19,72 +19,72 @@ type SimpleShellLog struct {
 // these function provide logging to the choosen logfile
 //
 
-func NewSimpleShellLog(logger kitlog.Logger) SimpleShellLog {
-	ssl := SimpleShellLog{}
+func NewShellLogger(logger kitlog.Logger) ShellLogger {
+	ssl := ShellLogger{}
 	ssl.log = logger
 	return ssl
 }
 
-func (ssl *SimpleShellLog) SetLogPrefix(prefix string) {
+func (ssl *ShellLogger) SetLogPrefix(prefix string) {
 	//ssl.log = kitlog.With(ssl.log, "session_id", session.ID())
 }
 
-func (ssl *SimpleShellLog) SetLog(log kitlog.Logger) {
+func (ssl *ShellLogger) SetLog(log kitlog.Logger) {
 	ssl.log = log
 }
 
-func (ssl *SimpleShellLog) GetLog() kitlog.Logger {
+func (ssl *ShellLogger) GetLog() kitlog.Logger {
 	return ssl.log
 }
 
-func (ssl *SimpleShellLog) SetLogLevel(lvl int) {
+func (ssl *ShellLogger) SetLogLevel(lvl int) {
 	ssl.loglevel = lvl
 }
 
-func (ssl *SimpleShellLog) GetLogLevel() int {
+func (ssl *ShellLogger) GetLogLevel() int {
 	return ssl.loglevel
 }
 
-func (ssl *SimpleShellLog) LogDebug(msg string, a ...interface{}) {
+func (ssl *ShellLogger) LogDebug(msg string, a ...interface{}) {
 	ssl.LogPrintln(fmt.Sprintf(msg, a...))
 }
 
-func (ssl *SimpleShellLog) LogTrace(msg string, a ...interface{}) {
+func (ssl *ShellLogger) LogTrace(msg string, a ...interface{}) {
 	ssl.LogPrintln(fmt.Sprintf(msg, a...))
 }
 
-func (ssl *SimpleShellLog) LogWarn(msg string, a ...interface{}) {
+func (ssl *ShellLogger) LogWarn(msg string, a ...interface{}) {
 	ssl.LogPrintln(fmt.Sprintf(msg, a...))
 }
 
-func (ssl *SimpleShellLog) LogInfo(msg string, a ...interface{}) {
+func (ssl *ShellLogger) LogInfo(msg string, a ...interface{}) {
 	ssl.LogPrintln(fmt.Sprintf(msg, a...))
 }
-func (ssl *SimpleShellLog) LogError(msg string, a ...interface{}) {
-	ssl.LogPrintln(fmt.Sprintf(msg, a...))
-}
-
-func (ssl *SimpleShellLog) LogFatal(msg string, a ...interface{}) {
+func (ssl *ShellLogger) LogError(msg string, a ...interface{}) {
 	ssl.LogPrintln(fmt.Sprintf(msg, a...))
 }
 
-func (ssl *SimpleShellLog) LogPrintln(msg string) {
+func (ssl *ShellLogger) LogFatal(msg string, a ...interface{}) {
+	ssl.LogPrintln(fmt.Sprintf(msg, a...))
+}
+
+func (ssl *ShellLogger) LogPrintln(msg string) {
 	ssl.log.Log(fmt.Sprintf("%s \n", msg))
 }
 
-func (ssl *SimpleShellLog) LogPrint(msg string) {
+func (ssl *ShellLogger) LogPrint(msg string) {
 	ssl.log.Log(msg)
 }
 
-func (ssl *SimpleShellLog) LogPrintlnf(msg string, a ...interface{}) {
+func (ssl *ShellLogger) LogPrintlnf(msg string, a ...interface{}) {
 	ssl.LogPrintln(fmt.Sprintf(msg, a...))
 }
 
-func (ssl *SimpleShellLog) LogPrintf(msg string, a ...interface{}) {
+func (ssl *ShellLogger) LogPrintf(msg string, a ...interface{}) {
 	ssl.LogPrint(fmt.Sprintf(msg, a...))
 }
 
-func (ssl *SimpleShellLog) OpenSessionFileLog(session sfinterfaces.ISession) *os.File {
+func (ssl *ShellLogger) OpenSessionFileLog(session sfinterfaces.ISession) *os.File {
 	f, err := os.OpenFile("simpleshell.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	// check error
 	if err != nil {

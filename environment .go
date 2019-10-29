@@ -9,7 +9,7 @@ import (
 	"github.com/eshu0/shellframework/interfaces"
 )
 
-type SimpleEnvironment struct {
+type Environment struct {
 	shell      sfinterfaces.IShell
 	namevalues map[string]sfinterfaces.IEnvironmentVariable
 }
@@ -18,31 +18,31 @@ func PointerInvalid(obj interface{}) bool {
 	return obj == nil
 }
 
-func NewSimpleEnvironment(shell sfinterfaces.IShell) sfinterfaces.IEnvironment {
+func NewEnvironment(shell sfinterfaces.IShell) sfinterfaces.IEnvironment {
 
-	var env = &SimpleEnvironment{}
+	var env = &Environment{}
 	env.namevalues = make(map[string]sfinterfaces.IEnvironmentVariable)
 	env.shell = shell
 	return env
 }
 
-func (env *SimpleEnvironment) SetShell(shell sfinterfaces.IShell) {
+func (env *Environment) SetShell(shell sfinterfaces.IShell) {
 	env.shell = shell
 }
 
-func (env *SimpleEnvironment) GetShell() sfinterfaces.IShell {
+func (env *Environment) GetShell() sfinterfaces.IShell {
 	return env.shell
 }
 
-func (env *SimpleEnvironment) SetNameValues(namevals map[string]sfinterfaces.IEnvironmentVariable) {
+func (env *Environment) SetNameValues(namevals map[string]sfinterfaces.IEnvironmentVariable) {
 	env.namevalues = namevals
 }
 
-func (env *SimpleEnvironment) GetNameValues() map[string]sfinterfaces.IEnvironmentVariable {
+func (env *Environment) GetNameValues() map[string]sfinterfaces.IEnvironmentVariable {
 	return env.namevalues
 }
 
-func (env *SimpleEnvironment) Print() {
+func (env *Environment) Print() {
 	if PointerInvalid(env) {
 		return
 	}
@@ -79,7 +79,7 @@ func (env *SimpleEnvironment) Print() {
 
 	val, exists := env.GetVariable(key)
 	if !exists {
-		sev := SimpleEnvironmentVariable{}
+		sev := EnvironmentVariable{}
 		sev.SetName(key)
 		sev.SetValues([]string{})
 		sev.SetType(1) // string
@@ -95,16 +95,16 @@ func (env *SimpleEnvironment) Print() {
 }
 */
 
-func (env *SimpleEnvironment) MakeMultiVariable(key string, val []string) sfinterfaces.IEnvironmentVariable {
-	sev := SimpleEnvironmentVariable{}
+func (env *Environment) MakeMultiVariable(key string, val []string) sfinterfaces.IEnvironmentVariable {
+	sev := EnvironmentVariable{}
 	sev.SetName(key)
 	sev.SetValues(val)
 	sev.SetType(1)
 	return &sev
 }
 
-func (env *SimpleEnvironment) MakeSingleVariable(key string, val string) sfinterfaces.IEnvironmentVariable {
-	sev := SimpleEnvironmentVariable{}
+func (env *Environment) MakeSingleVariable(key string, val string) sfinterfaces.IEnvironmentVariable {
+	sev := EnvironmentVariable{}
 	sev.SetName(key)
 	var vals []string
 	vals = append(vals, val)
@@ -113,16 +113,16 @@ func (env *SimpleEnvironment) MakeSingleVariable(key string, val string) sfinter
 	return &sev
 }
 
-func (env *SimpleEnvironment) SetVariable(value sfinterfaces.IEnvironmentVariable) {
+func (env *Environment) SetVariable(value sfinterfaces.IEnvironmentVariable) {
 	env.namevalues[value.GetName()] = value
 }
 
-func (env *SimpleEnvironment) GetVariable(key string) (sfinterfaces.IEnvironmentVariable, bool) {
+func (env *Environment) GetVariable(key string) (sfinterfaces.IEnvironmentVariable, bool) {
 	val, exists := env.namevalues[key]
 	return val, exists
 }
 
-func (env *SimpleEnvironment) GetValues(key string) (bool, []string) {
+func (env *Environment) GetValues(key string) (bool, []string) {
 	if PointerInvalid(env) {
 		return false, []string{}
 	}
@@ -137,7 +137,7 @@ func (env *SimpleEnvironment) GetValues(key string) (bool, []string) {
 	}
 }
 
-func (env *SimpleEnvironment) SaveToFile(path string) {
+func (env *Environment) SaveToFile(path string) {
 	shell := env.GetShell()
 	log := *shell.GetLog()
 	if _, err := os.Stat(path); os.IsNotExist(err) {
@@ -157,7 +157,7 @@ func (env *SimpleEnvironment) SaveToFile(path string) {
 	}
 }
 
-func (env *SimpleEnvironment) LoadFile(path string) {
+func (env *Environment) LoadFile(path string) {
 
 	shell := env.GetShell()
 	log := *shell.GetLog()
@@ -177,7 +177,7 @@ func (env *SimpleEnvironment) LoadFile(path string) {
 			log.LogPrintlnf("LoadFile(): Reading '%s' failed with %s ", filepath, err.Error())
 			return
 		}
-		var f map[string]SimpleEnvironmentVariable
+		var f map[string]EnvironmentVariable
 
 		//var NameValues map[string]ishell.IEnvironmentVariable
 
@@ -224,36 +224,36 @@ func (env *SimpleEnvironment) LoadFile(path string) {
 
 // this is here because when in a seperate file
 // the golang plus removes the import to interfaces - useful....
-type SimpleEnvironmentVariable struct {
+type EnvironmentVariable struct {
 	name     string
 	Values   []string
 	Itemtype int
 }
 
-func (sevar *SimpleEnvironmentVariable) GetName() string {
+func (sevar *EnvironmentVariable) GetName() string {
 	return sevar.name
 }
 
-func (sevar *SimpleEnvironmentVariable) GetValues() []string {
+func (sevar *EnvironmentVariable) GetValues() []string {
 	return sevar.Values
 }
 
-func (sevar *SimpleEnvironmentVariable) GetType() int {
+func (sevar *EnvironmentVariable) GetType() int {
 	return sevar.Itemtype
 }
 
-func (sevar *SimpleEnvironmentVariable) SetName(name string) {
+func (sevar *EnvironmentVariable) SetName(name string) {
 	sevar.name = name
 }
 
-func (sevar *SimpleEnvironmentVariable) SetValues(vals []string) {
+func (sevar *EnvironmentVariable) SetValues(vals []string) {
 	sevar.Values = vals
 }
 
-func (sevar *SimpleEnvironmentVariable) SetType(typ int) {
+func (sevar *EnvironmentVariable) SetType(typ int) {
 	sevar.Itemtype = typ
 }
 
-func (sevar *SimpleEnvironmentVariable) String() string {
+func (sevar *EnvironmentVariable) String() string {
 	return strings.Join(sevar.GetValues(), ",")
 }

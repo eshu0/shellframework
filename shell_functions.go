@@ -24,21 +24,21 @@ const PersistEnvironment string = "PersistEnvironment"
 // these function provide printing to the Out
 //
 
-func (shell *SimpleShell) Println(msg string) {
+func (shell *Shell) Println(msg string) {
 	if !PointerInvalid(shell.out) {
 		shell.out.WriteString(msg + "\n")
 	}
 }
 
-func (shell *SimpleShell) Printlnf(msg string, a ...interface{}) {
+func (shell *Shell) Printlnf(msg string, a ...interface{}) {
 	shell.Println(fmt.Sprintf(msg, a...))
 }
 
-func (shell *SimpleShell) Printf(msg string, a ...interface{}) {
+func (shell *Shell) Printf(msg string, a ...interface{}) {
 	shell.Print(fmt.Sprintf(msg, a...))
 }
 
-func (shell *SimpleShell) Print(msg string) {
+func (shell *Shell) Print(msg string) {
 	if !PointerInvalid(shell.out) {
 		shell.out.WriteString(msg)
 	}
@@ -48,7 +48,7 @@ func (shell *SimpleShell) Print(msg string) {
 // SHELL Extra Print functions
 //
 
-func (shell *SimpleShell) PrintDetails() {
+func (shell *Shell) PrintDetails() {
 	shell.Println("*****************************")
 	shell.Printlnf("Version: %s", shell.GetVersion())
 	shell.Printlnf("Session: %s", shell.GetSession().ID())
@@ -56,7 +56,7 @@ func (shell *SimpleShell) PrintDetails() {
 	shell.Println("")
 }
 
-func (shell *SimpleShell) PrintInputMessage() {
+func (shell *Shell) PrintInputMessage() {
 	sess := shell.GetSession()
 	if !PointerInvalid(sess) {
 		shell.Printf("[%s]: ", sess.ID())
@@ -69,7 +69,7 @@ func (shell *SimpleShell) PrintInputMessage() {
 // SHELL Processing
 //
 
-func (shell *SimpleShell) ParseInput(input string) []sfinterfaces.ICommandInput {
+func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 
 	var ecs []sfinterfaces.ICommandInput
 	ecs = []sfinterfaces.ICommandInput{}
@@ -112,7 +112,7 @@ func (shell *SimpleShell) ParseInput(input string) []sfinterfaces.ICommandInput 
 				commandfound = false
 				commandfoundat = 0
 
-				ci := SimpleCommandInput{}
+				ci := CommandInput{}
 				ecs = append(ecs, &ci)
 
 				log.LogPrintln("ParseInput(): appended first command")
@@ -218,7 +218,7 @@ func (shell *SimpleShell) ParseInput(input string) []sfinterfaces.ICommandInput 
 						if char == '|' {
 							log.LogPrintlnf("ParseInput(): Pipe found at '%d' - new command input created", pos)
 							log.LogPrintlnf("ParseInput(): Append %s ", ecs[ecsposition].GetCommandName())
-							ci := SimpleCommandInput{}
+							ci := CommandInput{}
 							ecs = append(ecs, &ci)
 							ecsposition++
 							commandfound = false
@@ -312,7 +312,7 @@ func (shell *SimpleShell) ParseInput(input string) []sfinterfaces.ICommandInput 
 	return ecs
 }
 
-func (shell *SimpleShell) Run() {
+func (shell *Shell) Run() {
 	// grab the environment
 	env := shell.GetEnvironment()
 
@@ -443,7 +443,7 @@ func (shell *SimpleShell) Run() {
 
 }
 
-func (shell *SimpleShell) RunInteractive() {
+func (shell *Shell) RunInteractive() {
 
 	// grab the environment
 	env := shell.GetEnvironment()
@@ -620,13 +620,13 @@ func (shell *SimpleShell) RunInteractive() {
 //
 // Commands adding etc
 //
-func (shell *SimpleShell) AddCommand(cmd sfinterfaces.ICommand) {
+func (shell *Shell) AddCommand(cmd sfinterfaces.ICommand) {
 	// append the command to the shell
 	shell.commands = append(shell.commands, cmd)
 }
 
 //Adds a Simple Command to the Shell
-func (shell *SimpleShell) AddCommands(commands []sfinterfaces.ICommand) {
+func (shell *Shell) AddCommands(commands []sfinterfaces.ICommand) {
 	// walk thoguh the commands passed in
 	for _, cmd := range commands {
 		// make sure this pointer is valid
@@ -638,24 +638,24 @@ func (shell *SimpleShell) AddCommands(commands []sfinterfaces.ICommand) {
 
 }
 
-func (shell *SimpleShell) AddNewCommandWithFlags(name string, description string, operator func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult, flags []sfinterfaces.IFlag) {
+func (shell *Shell) AddNewCommandWithFlags(name string, description string, operator func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult, flags []sfinterfaces.IFlag) {
 	shell.AddCommand(shell.NewCommand(name, description, operator, flags))
 }
 
-func (shell *SimpleShell) AddNewCommand(name string, description string, operator func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult) {
+func (shell *Shell) AddNewCommand(name string, description string, operator func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult) {
 	flags := []sfinterfaces.IFlag{}
 	shell.AddCommand(shell.NewCommand(name, description, operator, flags))
 }
 
-func (shell *SimpleShell) NewCommand(name string, description string, operator func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult, flags []sfinterfaces.IFlag) sfinterfaces.ICommand {
+func (shell *Shell) NewCommand(name string, description string, operator func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult, flags []sfinterfaces.IFlag) sfinterfaces.ICommand {
 
-	sc := &SimpleCommand{}
+	sc := &Command{}
 	sc.name = name
 	sc.operator = operator //
 	sc.description = description
 	sc.shell = shell
 
-	flgs := &SimpleFlags{}
+	flgs := &CommandFlags{}
 	flgs.SetCommand(sc)
 	flgs.SetFlags(flags)
 

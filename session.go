@@ -9,15 +9,15 @@ import (
 
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
-type SimpleSession struct {
+type Session struct {
 	id string
 }
 
 // this is a very simple random string
 // this is just to uniquely identify each session
 // this is meant to be over written if needs be
-func NewSimpleSession() sfinterfaces.ISession {
-	ss := new(SimpleSession)
+func NewSession() sfinterfaces.ISession {
+	ss := new(Session)
 
 	rand.Seed(time.Now().UnixNano())
 	b := make([]rune, 10)
@@ -29,6 +29,6 @@ func NewSimpleSession() sfinterfaces.ISession {
 }
 
 // returns the string ID for the session
-func (ss *SimpleSession) ID() string {
+func (ss *Session) ID() string {
 	return ss.id
 }

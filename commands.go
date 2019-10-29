@@ -6,7 +6,7 @@ import (
 	"github.com/eshu0/shellframework/interfaces"
 )
 
-type SimpleCommand struct {
+type Command struct {
 	name        string
 	description string
 	operator    func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult
@@ -16,33 +16,33 @@ type SimpleCommand struct {
 	flags        sfinterfaces.IFlags
 }
 
-func (command *SimpleCommand) GetDescription() string {
+func (command *Command) GetDescription() string {
 	return command.description
 }
 
-func (command *SimpleCommand) GetName() string {
+func (command *Command) GetName() string {
 	return command.name
 }
 
-func (command *SimpleCommand) SetShell(shell sfinterfaces.IShell) {
+func (command *Command) SetShell(shell sfinterfaces.IShell) {
 	command.shell = shell
 }
 
-func (command *SimpleCommand) GetShell() sfinterfaces.IShell {
+func (command *Command) GetShell() sfinterfaces.IShell {
 	return command.shell
 }
 
 //Get and Set the input for the command
-func (command *SimpleCommand) SetCommandInput(input sfinterfaces.ICommandInput) {
+func (command *Command) SetCommandInput(input sfinterfaces.ICommandInput) {
 	command.commandinput = input
 }
 
-func (command *SimpleCommand) GetCommandInput() sfinterfaces.ICommandInput {
+func (command *Command) GetCommandInput() sfinterfaces.ICommandInput {
 	return command.commandinput
 }
 
 // This matches the command
-func (command *SimpleCommand) Match(incmd sfinterfaces.ICommandInput) bool {
+func (command *Command) Match(incmd sfinterfaces.ICommandInput) bool {
 
 	shell := command.GetShell()
 	log := *shell.GetLog()
@@ -58,7 +58,7 @@ func (command *SimpleCommand) Match(incmd sfinterfaces.ICommandInput) bool {
 	return false
 }
 
-func (command *SimpleCommand) Process() sfinterfaces.ICommandResult {
+func (command *Command) Process() sfinterfaces.ICommandResult {
 	// get the shell for logging
 
 	shell := command.GetShell()
@@ -109,42 +109,42 @@ func (command *SimpleCommand) Process() sfinterfaces.ICommandResult {
 }
 
 /*
-func (command *SimpleCommand) Args() []string {
+func (command *Command) Args() []string {
 	return command.args
 }
 */
 
-func (command *SimpleCommand) GetFlags() sfinterfaces.IFlags {
+func (command *Command) GetFlags() sfinterfaces.IFlags {
 	return command.flags
 }
 
-func (command *SimpleCommand) SetFlags(flgs sfinterfaces.IFlags) {
+func (command *Command) SetFlags(flgs sfinterfaces.IFlags) {
 	command.flags = flgs
 }
 
-type SimpleCommandInput struct {
+type CommandInput struct {
 	name     string
 	rawinput string
 	args     []string
 }
 
-func (cinput *SimpleCommandInput) GetCommandName() string {
+func (cinput *CommandInput) GetCommandName() string {
 	return cinput.name
 }
 
-func (cinput *SimpleCommandInput) GetLowerCommandName() string {
+func (cinput *CommandInput) GetLowerCommandName() string {
 	return strings.ToLower(cinput.name)
 }
 
-func (cinput *SimpleCommandInput) GetArgs() []string {
+func (cinput *CommandInput) GetArgs() []string {
 	return cinput.args
 }
 
-func (cinput *SimpleCommandInput) GetRawInput() string {
+func (cinput *CommandInput) GetRawInput() string {
 	return cinput.rawinput
 }
 
-func (cinput *SimpleCommandInput) GetInputWithOutCommand() string {
+func (cinput *CommandInput) GetInputWithOutCommand() string {
 	if cinput.rawinput != "" {
 		runes := []rune(cinput.rawinput)
 		commandlength := len(cinput.name)
@@ -153,44 +153,44 @@ func (cinput *SimpleCommandInput) GetInputWithOutCommand() string {
 	return ""
 }
 
-func (cinput *SimpleCommandInput) SetCommandName(name string) {
+func (cinput *CommandInput) SetCommandName(name string) {
 	cinput.name = name
 }
 
-func (cinput *SimpleCommandInput) SetRawInput(input string) {
+func (cinput *CommandInput) SetRawInput(input string) {
 	cinput.rawinput = input
 }
 
-func (cinput *SimpleCommandInput) SetArgs(args []string) {
+func (cinput *CommandInput) SetArgs(args []string) {
 	cinput.args = args
 }
 
-type SimpleCommandResult struct {
+type CommandResult struct {
 	exitshell bool
 	sucess    bool
 	err       error
 	result    string
 }
 
-func (cresult *SimpleCommandResult) ExitShell() bool {
+func (cresult *CommandResult) ExitShell() bool {
 	return cresult.exitshell
 }
 
-func (cresult *SimpleCommandResult) Sucessful() bool {
+func (cresult *CommandResult) Sucessful() bool {
 	return cresult.sucess
 }
 
-func (cresult *SimpleCommandResult) Err() error {
+func (cresult *CommandResult) Err() error {
 	return cresult.err
 }
 
-func (cresult *SimpleCommandResult) Result() string {
+func (cresult *CommandResult) Result() string {
 	return cresult.result
 }
 
 func NewSuccessCommandResult(msg string) sfinterfaces.ICommandResult {
-	//var sr SimpleCommandResult
-	sr := &SimpleCommandResult{}
+	//var sr CommandResult
+	sr := &CommandResult{}
 	sr.err = nil
 	sr.sucess = true
 	sr.result = msg
@@ -199,8 +199,8 @@ func NewSuccessCommandResult(msg string) sfinterfaces.ICommandResult {
 }
 
 func NewExitSuccessCommandResult() sfinterfaces.ICommandResult {
-	//var sr SimpleCommandResult
-	sr := &SimpleCommandResult{}
+	//var sr CommandResult
+	sr := &CommandResult{}
 	sr.err = nil
 	sr.sucess = true
 	sr.result = ""

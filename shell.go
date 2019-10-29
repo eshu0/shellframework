@@ -6,7 +6,7 @@ import (
 	"github.com/eshu0/shellframework/interfaces"
 )
 
-type SimpleShell struct {
+type Shell struct {
 	commands    []sfinterfaces.ICommand
 	environment *sfinterfaces.IEnvironment
 	version     string
@@ -18,11 +18,11 @@ type SimpleShell struct {
 	err *os.File
 }
 
-func NewSimpleShell(session sfinterfaces.ISession, In *os.File, Out *os.File, Err *os.File, logfile sfinterfaces.IShellLogger) *SimpleShell {
+func NewShell(session sfinterfaces.ISession, In *os.File, Out *os.File, Err *os.File, logfile sfinterfaces.IShellLogger) *Shell {
 
-	shell := &SimpleShell{}
+	shell := &Shell{}
 
-	env := NewSimpleEnvironment(shell)
+	env := NewEnvironment(shell)
 	shell.environment = &env
 
 	shell.commands = []sfinterfaces.ICommand{}
@@ -39,31 +39,31 @@ func NewSimpleShell(session sfinterfaces.ISession, In *os.File, Out *os.File, Er
 
 // Get Methods
 
-func (shell *SimpleShell) GetCommands() []sfinterfaces.ICommand {
+func (shell *Shell) GetCommands() []sfinterfaces.ICommand {
 	return shell.commands
 }
 
-func (shell *SimpleShell) GetEnvironment() sfinterfaces.IEnvironment {
+func (shell *Shell) GetEnvironment() sfinterfaces.IEnvironment {
 	return *shell.environment
 }
 
-func (shell *SimpleShell) GetSession() sfinterfaces.ISession {
+func (shell *Shell) GetSession() sfinterfaces.ISession {
 	return *shell.session
 }
 
-func (shell *SimpleShell) GetVersion() string {
+func (shell *Shell) GetVersion() string {
 	return shell.version
 }
 
-func (shell *SimpleShell) GetIn() *os.File {
+func (shell *Shell) GetIn() *os.File {
 	return shell.in
 }
 
-func (shell *SimpleShell) GetOut() *os.File {
+func (shell *Shell) GetOut() *os.File {
 	return shell.out
 }
 
-func (shell *SimpleShell) GetErr() *os.File {
+func (shell *Shell) GetErr() *os.File {
 	return shell.err
 }
 
@@ -73,10 +73,10 @@ func (shell *SimpleShell) GetErr() *os.File {
 // these function provide logging to the choosen logfile
 //
 
-func (shell *SimpleShell) SetLog(logger sfinterfaces.IShellLogger) {
+func (shell *Shell) SetLog(logger sfinterfaces.IShellLogger) {
 	shell.log = &logger
 }
 
-func (shell *SimpleShell) GetLog() *sfinterfaces.IShellLogger {
+func (shell *Shell) GetLog() *sfinterfaces.IShellLogger {
 	return shell.log
 }
