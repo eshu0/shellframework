@@ -23,12 +23,6 @@ type IShellLogger interface {
 	LogInfo(cmd string, data ...interface{})
 	LogDebug(cmd string, data ...interface{})
 
-	/*
-		LogPrintln(msg string)
-		LogPrintlnf(msg string, a ...interface{})
-		LogPrint(msg string)
-		LogPrintf(msg string, a ...interface{})
-	*/
-
+	// This opens a session 
 	OpenSessionFileLog(session ISession) *os.File
 }
