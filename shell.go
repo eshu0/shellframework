@@ -3,8 +3,8 @@ package shellframework
 import (
 	"os"
 
-	"github.com/eshu0/shellframework/interfaces"
 	"github.com/eshu0/shellframework/defaultcmds"
+	"github.com/eshu0/shellframework/interfaces"
 )
 
 type Shell struct {
@@ -36,7 +36,10 @@ func NewShell(session sfinterfaces.ISession, In *os.File, Out *os.File, Err *os.
 	shell.log = &logfile
 
 	// Add the default commands
-	shell.AddNewCommand("man", "Manual command similar to linux/unix systems", dcmds.Man)
+	//shell.AddNewCommand("man", "Manual command similar to linux/unix systems", dcmds.Man)
+	cmd := dcmds.ManCommand{}
+	cmd.Register(shell)
+
 	shell.AddNewCommand("help", "Help command", dcmds.Help)
 	shell.AddNewCommand("exit", "Exit terminal command", dcmds.Exit)
 	shell.AddNewCommand("cmd", "Commands command - jinx!", dcmds.Cmd)

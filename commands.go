@@ -7,11 +7,10 @@ import (
 )
 
 type Command struct {
-	name        string
-	description string
-	operator    func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult
-	shell       sfinterfaces.IShell
-	//args         []string
+	name         string
+	description  string
+	operator     func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult
+	shell        sfinterfaces.IShell
 	commandinput sfinterfaces.ICommandInput
 	flags        sfinterfaces.IFlags
 }
@@ -114,6 +113,10 @@ func (command *Command) Args() []string {
 }
 */
 
+func (command *Command) Register(shell sfinterfaces.IShell) {
+
+}
+
 func (command *Command) GetFlags() sfinterfaces.IFlags {
 	return command.flags
 }
@@ -141,7 +144,6 @@ func (command *Command) NewExitSuccessCommandResult() sfinterfaces.ICommandResul
 	sr.exitshell = true
 	return sr
 }
-
 
 type CommandInput struct {
 	name     string
