@@ -1,5 +1,9 @@
 package sfinterfaces
 
+import (
+	"os"
+)
+
 // main interface for the ShellLogger
 type IShellLogger interface {
 
@@ -19,4 +23,6 @@ type IShellLogger interface {
 	LogPrintlnf(msg string, a ...interface{})
 	LogPrint(msg string)
 	LogPrintf(msg string, a ...interface{})
+
+	OpenSessionFileLog(session ISession) (*os.File)
 }
