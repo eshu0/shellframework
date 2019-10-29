@@ -27,37 +27,6 @@ type CommandFlag struct {
 	foundsvalue *string
 	foundivalue *int
 
-	//parent CommandFlags
-}
-
-func (flags *CommandFlags) NewBoolFlag(name string, defaultvalue bool, usage string) {
-	sf := &CommandFlag{}
-	sf.name = name
-	sf.defaultbvalue = defaultvalue
-	sf.usage = usage
-	sf.flagtype = 2
-
-	flags.flags = append(flags.flags, sf)
-}
-
-func (flags *CommandFlags) NewIntFlag(name string, defaultvalue int, usage string) {
-	sf := &CommandFlag{}
-	sf.name = name
-	sf.defaultivalue = defaultvalue
-	sf.usage = usage
-	sf.flagtype = 3
-
-	flags.flags = append(flags.flags, sf)
-}
-
-func (flags *CommandFlags) NewStringFlag(name string, defaultvalue string, usage string) {
-	sf := &CommandFlag{}
-	sf.name = name
-	sf.defaultsvalue = defaultvalue
-	sf.usage = usage
-	sf.flagtype = 1
-
-	flags.flags = append(flags.flags, sf)
 }
 
 func (flg *CommandFlag) GetName() string {

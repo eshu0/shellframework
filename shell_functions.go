@@ -317,7 +317,7 @@ func (shell *Shell) Run() {
 	shouldcontinue := true
 	session := shell.GetSession()
 
-	if(session.GetInteractive()){
+	if session.GetInteractive() {
 		lastcommandpos := 0
 		for {
 
@@ -476,7 +476,7 @@ func (shell *Shell) Run() {
 
 		} // for loop
 
-	}else{
+	} else {
 		reader := bufio.NewReader(shell.in)
 		for {
 
@@ -593,12 +593,30 @@ func (shell *Shell) Run() {
 		} // for loop
 	}
 
-
 }
 
 //
 // Commands adding etc
 //
+
+func (shell *Shell) NewCommand(name string, description string, operator func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult, flags []sfinterfaces.IFlag) sfinterfaces.ICommand {
+
+	sc := &Command{}
+	sc.name = name
+	sc.operator = operator //
+	sc.description = description
+	sc.shell = shell
+
+	flgs := &CommandFlags{}
+	flgs.SetCommand(sc)
+	flgs.SetFlags(flags)
+
+	sc.SetFlags(flgs)
+
+	//sc.flags = flags
+	return sc
+}
+
 func (shell *Shell) AddCommand(cmd sfinterfaces.ICommand) {
 	// append the command to the shell
 	shell.commands = append(shell.commands, cmd)
@@ -617,29 +635,98 @@ func (shell *Shell) AddCommands(commands []sfinterfaces.ICommand) {
 
 }
 
-func (shell *Shell) AddNewCommandWithFlags(name string, description string, operator func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult, flags []sfinterfaces.IFlag) {
+func (shell *Shell) RegisterNewCommandWithFlags(name string, description string, operator func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult, flags []sfinterfaces.IFlag) {
 	shell.AddCommand(shell.NewCommand(name, description, operator, flags))
 }
 
-func (shell *Shell) AddNewCommand(name string, description string, operator func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult) {
+func (shell *Shell) RegisterNewCommand(name string, description string, operator func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult) {
 	flags := []sfinterfaces.IFlag{}
 	shell.AddCommand(shell.NewCommand(name, description, operator, flags))
 }
 
-func (shell *Shell) NewCommand(name string, description string, operator func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult, flags []sfinterfaces.IFlag) sfinterfaces.ICommand {
+func (shell *Shell) RegisterCommandNewBoolFlag(cmd string, name string, defaultvalue bool, usage string) {
+	sf := &CommandFlag{}
+	sf.name = name
+	sf.defaultbvalue = defaultvalue
+	sf.usage = usage
+	sf.flagtype = 2
 
-	sc := &Command{}
-	sc.name = name
-	sc.operator = operator //
-	sc.description = description
-	sc.shell = shell
+	for _, registeredcmd := range shell.commands {
+		// make sure this pointer is valid
+		if !PointerInvalid(registeredcmd) {
+			// use this method to add the simple command
+			if registeredcmd.GetName() == cmd {
 
-	flgs := &CommandFlags{}
-	flgs.SetCommand(sc)
-	flgs.SetFlags(flags)
+				// get the iflags from the command
+				flgs := registeredcmd.GetFlags()
 
-	sc.SetFlags(flgs)
+				// now get the underlying array list
+				flags := flgs.GetFlags()
+				flags = append(flags, sf)
+				flgs.SetFlags(flags)
+				// finished setting the list
 
-	//sc.flags = flags
-	return sc
+				registeredcmd.SetFlags(flgs)
+				return
+			}
+		}
+	}
+}
+
+func (shell *Shell) RegisterCommandNewIntFlag(cmd string, name string, defaultvalue int, usage string) {
+	sf := &CommandFlag{}
+	sf.name = name
+	sf.defaultivalue = defaultvalue
+	sf.usage = usage
+	sf.flagtype = 3
+
+	for _, registeredcmd := range shell.commands {
+		// make sure this pointer is valid
+		if !PointerInvalid(registeredcmd) {
+			// use this method to add the simple command
+			if registeredcmd.GetName() == cmd {
+
+				// get the iflags from the command
+				flgs := registeredcmd.GetFlags()
+
+				// now get the underlying array list
+				flags := flgs.GetFlags()
+				flags = append(flags, sf)
+				flgs.SetFlags(flags)
+				// finished setting the list
+
+				registeredcmd.SetFlags(flgs)
+				return
+			}
+		}
+	}
+}
+
+func (shell *Shell) RegisterCommandNewStringFlag(cmd string, name string, defaultvalue string, usage string) {
+	sf := &CommandFlag{}
+	sf.name = name
+	sf.defaultsvalue = defaultvalue
+	sf.usage = usage
+	sf.flagtype = 1
+
+	for _, registeredcmd := range shell.commands {
+		// make sure this pointer is valid
+		if !PointerInvalid(registeredcmd) {
+			// use this method to add the simple command
+			if registeredcmd.GetName() == cmd {
+
+				// get the iflags from the command
+				flgs := registeredcmd.GetFlags()
+
+				// now get the underlying array list
+				flags := flgs.GetFlags()
+				flags = append(flags, sf)
+				flgs.SetFlags(flags)
+				// finished setting the list
+
+				registeredcmd.SetFlags(flgs)
+				return
+			}
+		}
+	}
 }
