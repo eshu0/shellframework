@@ -6,10 +6,11 @@ import (
 
 	"github.com/eshu0/shellframework/interfaces"
 	kitlog "github.com/go-kit/kit/log"
+	kitlevel "github.com/go-kit/kit/log/level"
 )
 
 type ShellLogger struct {
-	loglevel int
+	loglevel kitlevel.Option
 	log      kitlog.Logger
 }
 
@@ -25,9 +26,9 @@ func NewShellLogger(logger kitlog.Logger) ShellLogger {
 	return ssl
 }
 
-func (ssl *ShellLogger) SetLogPrefix(prefix string) {
+//func (ssl *ShellLogger) SetLogPrefix(prefix string) {
 	//ssl.log = kitlog.With(ssl.log, "session_id", session.ID())
-}
+//}
 
 func (ssl *ShellLogger) SetLog(log kitlog.Logger) {
 	ssl.log = log
@@ -37,43 +38,39 @@ func (ssl *ShellLogger) GetLog() kitlog.Logger {
 	return ssl.log
 }
 
-func (ssl *ShellLogger) SetLogLevel(lvl int) {
+func (ssl *ShellLogger) SetLogLevel(lvl kitlevel.Option) {
 	ssl.loglevel = lvl
+	// have to set the filter for the level
+	ssl.log = kitlevel.NewFilter(ssl.log, lvl)
 }
 
-func (ssl *ShellLogger) GetLogLevel() int {
+func (ssl *ShellLogger) GetLogLevel() kitlevel.Option {
 	return ssl.loglevel
 }
 
-func (ssl *ShellLogger) LogDebug(msg string, a ...interface{}) {
-	ssl.LogPrintln(fmt.Sprintf(msg, a...))
+// the logging functions are here
+func (ssl *ShellLogger) LogDebug(data ...interface{}) {
+	kitlevel.Debug(ssl.log).Log(data)
 }
 
-func (ssl *ShellLogger) LogTrace(msg string, a ...interface{}) {
-	ssl.LogPrintln(fmt.Sprintf(msg, a...))
+func (ssl *ShellLogger) LogWarn(data ...interface{}) {
+	kitlevel.Warn(ssl.log).Log(data)
 }
 
-func (ssl *ShellLogger) LogWarn(msg string, a ...interface{}) {
-	ssl.LogPrintln(fmt.Sprintf(msg, a...))
+func (ssl *ShellLogger) LogInfo(data ...interface{}) {
+	kitlevel.Info(ssl.log).Log(data)
+}
+func (ssl *ShellLogger) LogError(data ...interface{}) {
+	kitlevel.Error(ssl.log).Log(data)
 }
 
-func (ssl *ShellLogger) LogInfo(msg string, a ...interface{}) {
-	ssl.LogPrintln(fmt.Sprintf(msg, a...))
-}
-func (ssl *ShellLogger) LogError(msg string, a ...interface{}) {
-	ssl.LogPrintln(fmt.Sprintf(msg, a...))
-}
-
-func (ssl *ShellLogger) LogFatal(msg string, a ...interface{}) {
-	ssl.LogPrintln(fmt.Sprintf(msg, a...))
-}
-
+// These all print at Info level which displays in the log by default
 func (ssl *ShellLogger) LogPrintln(msg string) {
-	ssl.log.Log(fmt.Sprintf("%s \n", msg))
+	ssl.LogPrint(fmt.Sprintf("%s \n", msg))
 }
 
 func (ssl *ShellLogger) LogPrint(msg string) {
-	ssl.log.Log(msg)
+	ssl.LogInfo(msg)
 }
 
 func (ssl *ShellLogger) LogPrintlnf(msg string, a ...interface{}) {
@@ -93,13 +90,13 @@ func (ssl *ShellLogger) OpenSessionFileLog(session sfinterfaces.ISession) *os.Fi
 
 	//logger :=
 	logger := kitlog.NewLogfmtLogger(f) //(f, session.ID()+" ", log.LstdFlags)
-	logger = kitlog.With(logger, "session_id", session.ID())
+	logger = kitlog.With(logger, "session_id", session.ID(), "ts", kitlog.DefaultTimestampUTC, "caller", kitlog.DefaultCaller)
 
 	// check log is valid
 	if logger == nil {
 		panic("logger is nil")
 	}
 	ssl.log = logger
-	ssl.loglevel = -1
+	//ssl.loglevel = -1
 	return f
 }
