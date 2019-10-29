@@ -4,8 +4,21 @@ import (
 	"strings"
 
 	"github.com/eshu0/shellframework/interfaces"
-
 )
+
+type EnvCommand struct {
+}
+
+func (command EnvCommand) Register(shell sfinterfaces.IShell) {
+
+	Flags := *new(sfinterfaces.IFlags)
+
+	Flags.NewStringFlag("key", "", "Sets a string value")
+	Flags.NewStringFlag("value", "", "Sets a string value")
+	Flags.NewBoolFlag("list", false, "List Environment Variables")
+
+	shell.AddNewCommandWithFlags("env", "Environment command", Env, Flags.GetFlags())
+}
 
 func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 

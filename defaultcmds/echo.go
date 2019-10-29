@@ -4,6 +4,13 @@ import (
 	"github.com/eshu0/shellframework/interfaces"
 )
 
+type EchoCommand struct {
+}
+
+func (command EchoCommand) Register(shell sfinterfaces.IShell) {
+	shell.AddNewCommand("echo", "Echo text to terminal", Echo)
+}
+
 //Echo the terminal
 func Echo(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 

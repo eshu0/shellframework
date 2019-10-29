@@ -4,6 +4,12 @@ import (
 	"github.com/eshu0/shellframework/interfaces"
 )
 
+type CmdCommand struct {
+}
+
+func (command CmdCommand) Register(shell sfinterfaces.IShell) {
+	shell.AddNewCommand("cmd", "Commands command - jinx!", Cmd)
+}
 
 // Command
 func Cmd(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
