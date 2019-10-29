@@ -2,14 +2,15 @@ package shellframework
 
 import (
 	"fmt"
-	"log"
 	"os"
+
 	"github.com/eshu0/shellframework/interfaces"
+	kitlog "github.com/go-kit/kit/log"
 )
 
 type SimpleShellLog struct {
 	loglevel int
-	log      *log.Logger
+	log      kitlog.Logger
 }
 
 //
@@ -18,17 +19,14 @@ type SimpleShellLog struct {
 // these function provide logging to the choosen logfile
 //
 
-func NewSimpleShellLog(logger *log.Logger) SimpleShellLog {
+func NewSimpleShellLog(logger kitlog.Logger) SimpleShellLog {
 	ssl := SimpleShellLog{}
 	ssl.log = logger
-	ssl.loglevel = -1
 	return ssl
 }
 
 func (ssl *SimpleShellLog) SetLogPrefix(prefix string) {
-	if !PointerInvalid(ssl.log) {
-		ssl.log.SetPrefix(prefix)
-	}
+	//ssl.log = kitlog.With(ssl.log, "session_id", session.ID())
 }
 
 func (ssl *SimpleShellLog) SetLogLevel(lvl int) {
@@ -63,15 +61,11 @@ func (ssl *SimpleShellLog) LogFatal(msg string, a ...interface{}) {
 }
 
 func (ssl *SimpleShellLog) LogPrintln(msg string) {
-	if !PointerInvalid(ssl.log) {
-		ssl.log.Println(msg)
-	}
+	ssl.log.Log(fmt.Sprintf("%s \n", msg))
 }
 
 func (ssl *SimpleShellLog) LogPrint(msg string) {
-	if !PointerInvalid(ssl.log) {
-		ssl.log.Print(msg)
-	}
+	ssl.log.Log(msg)
 }
 
 func (ssl *SimpleShellLog) LogPrintlnf(msg string, a ...interface{}) {
@@ -82,20 +76,22 @@ func (ssl *SimpleShellLog) LogPrintf(msg string, a ...interface{}) {
 	ssl.LogPrint(fmt.Sprintf(msg, a...))
 }
 
-func (ssl *SimpleShellLog) OpenSessionFileLog(session sfinterfaces.ISession) (*os.File) {
+func (ssl *SimpleShellLog) OpenSessionFileLog(session sfinterfaces.ISession) *os.File {
 	f, err := os.OpenFile("simpleshell.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	// check error
 	if err != nil {
 		panic(err)
 	}
 
-	log := log.New(f, session.ID()+" ", log.LstdFlags)
+	//logger :=
+	logger := kitlog.NewLogfmtLogger(f) //(f, session.ID()+" ", log.LstdFlags)
+	logger = kitlog.With(logger, "session_id", session.ID())
 
 	// check log is valid
-	if log == nil {
-		panic("log is nil")
+	if logger == nil {
+		panic("logger is nil")
 	}
-	ssl.log = log
+	ssl.log = logger
 	ssl.loglevel = -1
 	return f
 }
