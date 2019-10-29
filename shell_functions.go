@@ -374,7 +374,7 @@ func (shell *Shell) Run() {
 					}
 				} else if key == keyboard.KeyEsc {
 					shell.Println("Exiting")
-					log.LogPrintln("Run(): Exiting")
+					log.LogDebug("Run()", "Exiting")
 					return
 				} else if key == keyboard.KeyEnter {
 					shell.Print("\n")
