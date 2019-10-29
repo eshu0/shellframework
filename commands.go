@@ -52,8 +52,7 @@ func (command *Command) Match(incmd sfinterfaces.ICommandInput) bool {
 	}
 
 	// this will space the trace with false positives
-	//
-	//command.shell.LogPrintlnf("Match(): Command '%s' did not match '%s'", command.GetName(), incmd.GetLowerCommandName())
+	//log.LogDebug("Match()", "Command '%s' did not match '%s'", command.GetName(), incmd.GetLowerCommandName())
 	return false
 }
 

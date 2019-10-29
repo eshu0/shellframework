@@ -26,7 +26,6 @@ type CommandFlag struct {
 	foundbvalue *bool
 	foundsvalue *string
 	foundivalue *int
-
 }
 
 func (flg *CommandFlag) GetName() string {
@@ -128,27 +127,27 @@ func (flgs *CommandFlags) Parse() {
 	// parsed flags
 	flgs.parsedflags = make(map[string]sfinterfaces.IFlag)
 
-	log.LogPrintlnf("Parse(): Number of flags %d for %s ", len(flags), command.GetName())
+	log.LogDebug("Parse()", " Number of flags %d for %s ", len(flags), command.GetName())
 
 	for _, flg := range flags {
 
 		//fr := &FlagResult{}
 		//fr.SetFlag(flg)
 		//_, alreadythere := sc.formal[flg.name]
-		log.LogPrintlnf("Parse(): Look up flag : %s ", flg.GetName())
+		log.LogDebug("Parse()", "Look up flag : %s ", flg.GetName())
 		alreadythere := flgset.Lookup(flg.GetName())
 		if alreadythere == nil {
-			log.LogPrintlnf("Parse(): %s was nil which means it is missing so going to add", flg.GetName())
+			log.LogDebug("Parse()", "%s was nil which means it is missing so going to add", flg.GetName())
 			flg.SetFlagValue(flgset)
 			flgs.parsedflags[flg.GetName()] = flg
 		} else {
-			log.LogPrintlnf("Parse(): %s was not nil so it will not be added", flg.GetName())
+			log.LogDebug("Parse()", "%s was not nil so it will not be added", flg.GetName())
 		}
 
 	}
 
 	//command.parsedflags = parsedflags
-	log.LogPrintln("Parse(): Set the parsed flags")
+	log.LogDebug("Parse()", "Set the parsed flags")
 
 	//if command.Shell.env_trace >= 0 {
 
@@ -156,16 +155,16 @@ func (flgs *CommandFlags) Parse() {
 		// have to derefence due to the interface
 		//sflag := *p
 		// what type are we dealing with
-		log.LogPrintlnf("Parse(): flag.GetName: %s", sflag.GetName())
-		log.LogPrintlnf("Parse(): flag.GetFlagType: %d", sflag.GetFlagType())
+		log.LogDebug("Parse()", "flag.GetName: %s", sflag.GetName())
+		log.LogDebug("Parse()", "flag.GetFlagType: %d", sflag.GetFlagType())
 
 		switch sflag.GetFlagType() {
 		case 1:
-			log.LogPrintlnf("Parse(): flag.String: %s", sflag.GetStringValue())
+			log.LogDebug("Parse()", "flag.String: %s", sflag.GetStringValue())
 		case 2:
-			log.LogPrintlnf("Parse(): flag.Boolean: %t", sflag.GetBoolValue())
+			log.LogDebug("Parse()", "flag.Boolean: %t", sflag.GetBoolValue())
 		case 3:
-			log.LogPrintlnf("Parse(): flag.Integer: %d", sflag.GetIntValue())
+			log.LogDebug("Parse()", "flag.Integer: %d", sflag.GetIntValue())
 		}
 
 	}

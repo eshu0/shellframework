@@ -41,7 +41,7 @@ func (shell *Shell) Print(msg string) {
 
 func (shell *Shell) PrintDetails() {
 	shell.Println("*****************************")
-	shell.Printlnf("Version: %s", shell.GetVersion())
+	shell.Printlnf("Framework Version: %s", shell.GetVersion())
 	shell.Printlnf("Session: %s", shell.GetSession().ID())
 	shell.Println("*****************************")
 	shell.Println("")
@@ -235,14 +235,14 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 
 	}
 
-	log.LogPrintln("ParseInput(): following command input parsed and will be executed in order 0> ")
+	log.LogDebug("ParseInput()", "following command input parsed and will be executed in order 0> ")
 	for epos, cmdi := range ecs {
-		log.LogPrintlnf("ParseInput():  %d - Command: %s", epos, cmdi.GetCommandName())
-		log.LogPrintlnf("ParseInput():  %d - Raw Input: %s", epos, cmdi.GetRawInput())
-		log.LogPrintlnf("ParseInput():  %d - Input with out name: %s", epos, cmdi.GetInputWithOutCommand())
+		log.LogDebug("ParseInput()", "%d - Command: %s", epos, cmdi.GetCommandName())
+		log.LogDebug("ParseInput()", "%d - Raw Input: %s", epos, cmdi.GetRawInput())
+		log.LogDebug("ParseInput()", "%d - Input with out name: %s", epos, cmdi.GetInputWithOutCommand())
 
 		for apos, arg := range cmdi.GetArgs() {
-			log.LogPrintlnf("ParseInput():  Args[%d]: %s", apos, arg)
+			log.LogDebug("ParseInput()", "Args[%d]: %s", apos, arg)
 		}
 	}
 	/*
@@ -411,13 +411,13 @@ func (shell *Shell) Run() {
 			endexecution := false
 			for _, ec := range executionorder {
 
-				log.LogPrintlnf("Run(): Found '%s' execution command  ", ec.GetCommandName())
+				log.LogDebug("Run()", "Found '%s' execution command  ", ec.GetCommandName())
 				if endexecution {
 					break
 				}
 
 				if cmdres != "" {
-					log.LogPrintlnf("Run(): Previous command finished with result %s override the args", cmdres)
+					log.LogDebug("Run()", "Previous command finished with result %s override the args", cmdres)
 					var pargs []string
 					pargs = append(pargs, cmdres)
 					ec.SetArgs(pargs)
@@ -430,29 +430,29 @@ func (shell *Shell) Run() {
 						// not sure this is the best thing to do
 						// this could be made more comperhensive
 						// we set this here so prasing doesn;t affect the input
-						log.LogPrintlnf("Run(): Started SetCommandInput for '%s' ", cmd.GetName())
+						log.LogDebug("Run()", "Started SetCommandInput for '%s' ", cmd.GetName())
 						cmd.SetCommandInput(ec)
-						log.LogPrintlnf("Run(): Finished SetCommandInput for '%s' ", cmd.GetName())
+						log.LogDebug("Run()", "Finished SetCommandInput for '%s' ", cmd.GetName())
 
-						log.LogPrintlnf("Run(): Started command '%s' ", cmd.GetName())
+						log.LogDebug("Run()", "Started command '%s' ", cmd.GetName())
 						res := cmd.Process()
-						log.LogPrintlnf("Run(): Finished command '%s'  ", cmd.GetName())
+						log.LogDebug("Run()", "Finished command '%s'  ", cmd.GetName())
 
 						if res.ExitShell() {
 							shouldcontinue = false
 						} else {
 
 							if res.Sucessful() {
-								log.LogPrintlnf("Run(): Command '%s' was sucessful ", cmd.GetName())
+								log.LogDebug("Run()", "Command '%s' was sucessful ", cmd.GetName())
 								cmdres = res.Result()
 							} else {
 								err := res.Err()
 								if err != nil {
 									shell.Printlnf("'%s' failed: %s ", cmd.GetName(), err.Error())
-									log.LogPrintlnf("Run(): Error with command '%s' following error provided: %s ", cmd.GetName(), err.Error())
+									log.LogDebug("Run()", "Error with command '%s' following error provided: %s ", cmd.GetName(), err.Error())
 								} else {
 									shell.Printlnf("Error with command '%s' no error provided ", cmd.GetName())
-									log.LogPrintlnf("Run(): Error with command '%s' no error provided  ", cmd.GetName())
+									log.LogDebug("Run()", "Error with command '%s' no error provided  ", cmd.GetName())
 								}
 								endexecution = true
 							}
@@ -466,7 +466,7 @@ func (shell *Shell) Run() {
 
 			if !shouldcontinue {
 				shell.Println("Exiting")
-				log.LogPrintln("Run(): Exiting")
+				log.LogDebug("Run()", "Exiting")
 				break
 			}
 
@@ -493,7 +493,7 @@ func (shell *Shell) Run() {
 				text, readerr := reader.ReadString('\n')
 
 				if readerr != nil {
-					log.LogPrintlnf("Run(): Reading input has provided following err '%s'", readerr.Error())
+					log.LogDebug("Run()", "Reading input has provided following err '%s'", readerr.Error())
 					break
 					// break out for loop
 				}
@@ -526,13 +526,13 @@ func (shell *Shell) Run() {
 				endexecution := false
 				for _, ec := range executionorder {
 
-					log.LogPrintlnf("Run(): Found '%s' execution command  ", ec.GetCommandName())
+					log.LogDebug("Run()", "Found '%s' execution command  ", ec.GetCommandName())
 					if endexecution {
 						break
 					}
 
 					if cmdres != "" {
-						log.LogPrintlnf("Run(): Previous command finished with result %s override the args", cmdres)
+						log.LogDebug("Run()", "Previous command finished with result %s override the args", cmdres)
 						var pargs []string
 						pargs = append(pargs, cmdres)
 						ec.SetArgs(pargs)
@@ -559,10 +559,10 @@ func (shell *Shell) Run() {
 									err := res.Err()
 									if err != nil {
 										shell.Printlnf("'%s' failed: %s ", cmd.GetName(), err.Error())
-										log.LogPrintlnf("Run(): Error with command '%s' following error provided: %s ", cmd.GetName(), err.Error())
+										log.LogDebug("Run()", "Error with command '%s' following error provided: %s ", cmd.GetName(), err.Error())
 									} else {
 										shell.Printlnf("Error with command '%s' no error provided ", cmd.GetName())
-										log.LogPrintlnf("Run(): Error with command '%s' no error provided  ", cmd.GetName())
+										log.LogDebug("Run()", "Error with command '%s' no error provided  ", cmd.GetName())
 									}
 									endexecution = true
 								}
@@ -576,13 +576,13 @@ func (shell *Shell) Run() {
 
 				if !shouldcontinue {
 					shell.Println("Exiting")
-					log.LogPrintln("Run(): Exiting")
+					log.LogDebug("Run()", "Exiting")
 					break
 				}
 
 			} else {
 
-				log.LogPrintln("Run(): Reader is nil")
+				log.LogDebug("Run()", "Reader is nil")
 				shouldcontinue = false
 			}
 
