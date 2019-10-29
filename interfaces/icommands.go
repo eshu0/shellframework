@@ -33,6 +33,10 @@ type ICommand interface {
 	//Get and Set IFlags
 	SetFlags(flgs IFlags)
 	GetFlags() IFlags
+
+	// helper methods
+	NewSuccessCommandResult(msg string) ICommandResult
+	NewExitSuccessCommandResult() ICommandResult
 }
 
 // This represents the input from the command line

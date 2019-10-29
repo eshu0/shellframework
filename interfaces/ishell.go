@@ -7,6 +7,7 @@ import (
 // this is the Shell version
 const Version = "0.1"
 
+
 // main interface for the Shell
 // i am human so most likely i have forgetten something
 type IShell interface {
@@ -28,7 +29,7 @@ type IShell interface {
 
 	//methods run the shell
 	Run()
-	
+
 	ParseInput(input string) []ICommandInput
 
 	// print functions

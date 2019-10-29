@@ -1,5 +1,14 @@
 package sfinterfaces
 
+/*
+*
+*	DEFAULT SHELL ENVIRONMENT VARIABLES
+*
+ */
+const EnvironmentFilename string = "env"
+const PersistEnvironment string = "PersistEnvironment"
+const LastCommands string = "LastCommands"
+
 type IEnvironment interface {
 	GetShell() IShell
 	SetShell(shell IShell)
