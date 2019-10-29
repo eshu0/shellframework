@@ -30,31 +30,34 @@ type CommandFlag struct {
 	//parent CommandFlags
 }
 
-func NewBoolFlag(name string, defaultvalue bool, usage string) sfinterfaces.IFlag {
+func (flags *CommandFlags) NewBoolFlag(name string, defaultvalue bool, usage string) {
 	sf := &CommandFlag{}
 	sf.name = name
 	sf.defaultbvalue = defaultvalue
 	sf.usage = usage
 	sf.flagtype = 2
-	return sf
+
+	flags.flags = append(flags.flags, sf)
 }
 
-func NewIntFlag(name string, defaultvalue int, usage string) sfinterfaces.IFlag {
+func (flags *CommandFlags) NewIntFlag(name string, defaultvalue int, usage string) {
 	sf := &CommandFlag{}
 	sf.name = name
 	sf.defaultivalue = defaultvalue
 	sf.usage = usage
 	sf.flagtype = 3
-	return sf
+
+	flags.flags = append(flags.flags, sf)
 }
 
-func NewStringFlag(name string, defaultvalue string, usage string) sfinterfaces.IFlag {
+func (flags *CommandFlags) NewStringFlag(name string, defaultvalue string, usage string) {
 	sf := &CommandFlag{}
 	sf.name = name
 	sf.defaultsvalue = defaultvalue
 	sf.usage = usage
 	sf.flagtype = 1
-	return sf
+
+	flags.flags = append(flags.flags, sf)
 }
 
 func (flg *CommandFlag) GetName() string {

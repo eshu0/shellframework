@@ -36,22 +36,23 @@ func NewShell(session sfinterfaces.ISession, In *os.File, Out *os.File, Err *os.
 	shell.log = &logfile
 
 	// Add the default commands
-	//shell.AddNewCommand("man", "Manual command similar to linux/unix systems", dcmds.Man)
-	cmd := dcmds.ManCommand{}
-	cmd.Register(shell)
+	mcmd := dcmds.ManCommand{}
+	mcmd.Register(shell)
 
-	shell.AddNewCommand("help", "Help command", dcmds.Help)
-	shell.AddNewCommand("exit", "Exit terminal command", dcmds.Exit)
-	shell.AddNewCommand("cmd", "Commands command - jinx!", dcmds.Cmd)
+	hcmd := dcmds.HelpCommand{}
+	hcmd.Register(shell)
 
-	Flags := []sfinterfaces.IFlag{}
-	//flg :=
-	Flags = append(Flags, NewStringFlag("key", "", "Sets a string value"))
-	Flags = append(Flags, NewStringFlag("value", "", "Sets a string value"))
-	Flags = append(Flags, NewBoolFlag("list", false, "List Environment Variables"))
+	excmd := dcmds.ExitCommand{}
+	excmd.Register(shell)
 
-	shell.AddNewCommandWithFlags("env", "Environment command", dcmds.Env, Flags)
-	shell.AddNewCommand("echo", "Echo text to terminal", dcmds.Echo)
+	ccmd := dcmds.CmdCommand{}
+	ccmd.Register(shell)
+
+	envcmd := dcmds.EnvCommand{}
+	envcmd.Register(shell)
+
+	echocmd := dcmds.EchoCommand{}
+	echocmd.Register(shell)
 
 	return shell
 }
