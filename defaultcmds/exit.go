@@ -1,7 +1,6 @@
 package dcmds
 
 import (
-	"github.com/eshu0/shellframework"
 	"github.com/eshu0/shellframework/interfaces"
 )
 
@@ -11,5 +10,5 @@ func Exit(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 	log := *shell.GetLog()
 
 	log.LogPrintln("exit() command called")
-	return shellframework.NewExitSuccessCommandResult()
+	return command.NewExitSuccessCommandResult()
 }

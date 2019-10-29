@@ -3,8 +3,8 @@ package dcmds
 import (
 	"strings"
 
-	"github.com/eshu0/shellframework"
 	"github.com/eshu0/shellframework/interfaces"
+
 )
 
 func Man(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
@@ -63,5 +63,5 @@ func Man(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 		shell.Println("What manual page do you want?")
 	}
 
-	return shellframework.NewSuccessCommandResult("")
+	return command.NewSuccessCommandResult("")
 }

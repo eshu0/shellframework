@@ -1,9 +1,9 @@
 package dcmds
 
 import (
-	"github.com/eshu0/shellframework"
 	"github.com/eshu0/shellframework/interfaces"
 )
+
 
 // Command
 func Cmd(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
@@ -13,7 +13,7 @@ func Cmd(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 	log.LogPrintln("cmd() command called")
 	env := shell.GetEnvironment()
 
-	items, exists := env.GetVariable(shellframework.LastCommands)
+	items, exists := env.GetVariable(sfinterfaces.LastCommands)
 	if !exists {
 		shell.Println("Environment has no last commands")
 	} else {
@@ -23,5 +23,5 @@ func Cmd(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 		}
 	}
 
-	return shellframework.NewSuccessCommandResult("")
+	return command.NewSuccessCommandResult("")
 }

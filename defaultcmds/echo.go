@@ -1,7 +1,6 @@
 package dcmds
 
 import (
-	"github.com/eshu0/shellframework"
 	"github.com/eshu0/shellframework/interfaces"
 )
 
@@ -17,5 +16,5 @@ func Echo(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 	log.LogPrintlnf("echo(): command name: %s", ec.GetCommandName())
 	log.LogPrintlnf("echo(): raw input: %s", ec.GetRawInput())
 	log.LogPrintlnf("echo(): printing: %s", ec.GetInputWithOutCommand())
-	return shellframework.NewSuccessCommandResult("")
+	return command.NewSuccessCommandResult("")
 }

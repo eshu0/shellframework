@@ -3,8 +3,8 @@ package dcmds
 import (
 	"strings"
 
-	"github.com/eshu0/shellframework"
 	"github.com/eshu0/shellframework/interfaces"
+
 )
 
 func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
@@ -90,5 +90,5 @@ func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 		}
 	}
 
-	return shellframework.NewSuccessCommandResult("")
+	return command.NewSuccessCommandResult("")
 }
