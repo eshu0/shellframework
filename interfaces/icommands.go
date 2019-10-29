@@ -37,6 +37,8 @@ type ICommand interface {
 	// helper methods
 	NewSuccessCommandResult(msg string) ICommandResult
 	NewExitSuccessCommandResult() ICommandResult
+
+	Register(shell IShell)
 }
 
 // This represents the input from the command line
