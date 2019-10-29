@@ -8,7 +8,7 @@ type EchoCommand struct {
 }
 
 func (command EchoCommand) Register(shell sfinterfaces.IShell) {
-	shell.AddNewCommand("echo", "Echo text to terminal", Echo)
+	shell.RegisterNewCommand("echo", "Echo text to terminal", Echo)
 }
 
 //Echo the terminal

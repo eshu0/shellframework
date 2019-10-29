@@ -8,7 +8,7 @@ type ExitCommand struct {
 }
 
 func (command ExitCommand) Register(shell sfinterfaces.IShell) {
-	shell.AddNewCommand("exit", "Exit terminal command", Exit)
+	shell.RegisterNewCommand("exit", "Exit terminal command", Exit)
 }
 
 //Exit the terminal

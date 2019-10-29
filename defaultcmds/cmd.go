@@ -8,7 +8,7 @@ type CmdCommand struct {
 }
 
 func (command CmdCommand) Register(shell sfinterfaces.IShell) {
-	shell.AddNewCommand("cmd", "Commands command - jinx!", Cmd)
+	shell.RegisterNewCommand("cmd", "Commands command - jinx!", Cmd)
 }
 
 // Command

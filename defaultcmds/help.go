@@ -8,7 +8,7 @@ type HelpCommand struct {
 }
 
 func (command HelpCommand) Register(shell sfinterfaces.IShell) {
-	shell.AddNewCommand("help", "Help command", Help)
+	shell.RegisterNewCommand("help", "Help command", Help)
 }
 
 // Help command

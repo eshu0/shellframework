@@ -10,7 +10,7 @@ type ManCommand struct {
 }
 
 func (command ManCommand) Register(shell sfinterfaces.IShell) {
-	shell.AddNewCommand("man", "Manual command similar to linux/unix systems", Man)
+	shell.RegisterNewCommand("man", "Manual command similar to linux/unix systems", Man)
 }
 
 func Man(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {

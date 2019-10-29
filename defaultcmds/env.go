@@ -11,13 +11,21 @@ type EnvCommand struct {
 
 func (command EnvCommand) Register(shell sfinterfaces.IShell) {
 
-	Flags := *new(sfinterfaces.IFlags)
+	//fg := command.GetFlags()
+	//Flags := []sfinterfaces.IFlag{}
 
-	Flags.NewStringFlag("key", "", "Sets a string value")
-	Flags.NewStringFlag("value", "", "Sets a string value")
-	Flags.NewBoolFlag("list", false, "List Environment Variables")
+	//flags := []sfinterfaces.IFlag{}
+	//cmd :=
+	shell.RegisterNewCommand("env", "Environment command", Env)
+	shell.RegisterCommandNewStringFlag("env", "key", "", "Sets a string value")
+	shell.RegisterCommandNewStringFlag("env", "value", "", "Sets a string value")
+	shell.RegisterCommandNewBoolFlag("env", "list", false, "List Environment Variables")
 
-	shell.AddNewCommandWithFlags("env", "Environment command", Env, Flags.GetFlags())
+	//Flags.NewStringFlag("key", "", "Sets a string value")
+	//Flags.NewStringFlag("value", "", "Sets a string value")
+	//Flags.NewBoolFlag("list", false, "List Environment Variables")
+
+	//shell.AddNewCommandWithFlags("env", "Environment command", Env, Flags)
 }
 
 func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
