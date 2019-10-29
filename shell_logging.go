@@ -50,18 +50,18 @@ func (ssl *ShellLogger) GetLogLevel() kitlevel.Option {
 
 // the logging functions are here
 func (ssl *ShellLogger) LogDebug(data ...interface{}) {
-	kitlevel.Debug(ssl.log).Log(data)
+	kitlevel.Debug(ssl.log).Log("data", fmt.Sprintf("%s", data))
 }
 
 func (ssl *ShellLogger) LogWarn(data ...interface{}) {
-	kitlevel.Warn(ssl.log).Log(data)
+	kitlevel.Warn(ssl.log).Log("data", fmt.Sprintf("%s", data))
 }
 
 func (ssl *ShellLogger) LogInfo(data ...interface{}) {
-	kitlevel.Info(ssl.log).Log(data)
+	kitlevel.Info(ssl.log).Log("data", fmt.Sprintf("%s", data))
 }
 func (ssl *ShellLogger) LogError(data ...interface{}) {
-	kitlevel.Error(ssl.log).Log(data)
+	kitlevel.Error(ssl.log).Log("data", fmt.Sprintf("%s", data))
 }
 
 // These all print at Info level which displays in the log by default
@@ -70,7 +70,7 @@ func (ssl *ShellLogger) LogPrintln(msg string) {
 }
 
 func (ssl *ShellLogger) LogPrint(msg string) {
-	ssl.LogInfo(msg)
+	ssl.LogInfo("msg", msg)
 }
 
 func (ssl *ShellLogger) LogPrintlnf(msg string, a ...interface{}) {
@@ -90,7 +90,7 @@ func (ssl *ShellLogger) OpenSessionFileLog(session sfinterfaces.ISession) *os.Fi
 
 	//logger :=
 	logger := kitlog.NewLogfmtLogger(f) //(f, session.ID()+" ", log.LstdFlags)
-	logger = kitlog.With(logger, "session_id", session.ID(), "ts", kitlog.DefaultTimestampUTC, "caller", kitlog.DefaultCaller)
+	logger = kitlog.With(logger, "session_id", session.ID(), "ts", kitlog.DefaultTimestampUTC)//, "caller", kitlog.DefaultCaller)
 
 	// check log is valid
 	if logger == nil {
