@@ -96,7 +96,13 @@ func (ssl *ShellLogger) OpenSessionFileLog(session sfinterfaces.ISession) *os.Fi
 	if logger == nil {
 		panic("logger is nil")
 	}
+
+
 	ssl.log = logger
+
+	// default to show everything
+	ssl.SetLogLevel(kitlevel.AllowAll())
+
 	//ssl.loglevel = -1
 	return f
 }

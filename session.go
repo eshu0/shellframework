@@ -11,6 +11,7 @@ var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 type Session struct {
 	id string
+	interactive bool
 }
 
 // this is a very simple random string
@@ -25,10 +26,27 @@ func NewSession() sfinterfaces.ISession {
 		b[i] = letterRunes[rand.Intn(len(letterRunes))]
 	}
 	ss.id = string(b)
+	ss.SetInteractive(false)
 	return ss
 }
+
+func NewInteractiveSession() sfinterfaces.ISession {
+	ss := NewSession()
+	ss.SetInteractive(true)
+	return ss
+}
+
 
 // returns the string ID for the session
 func (ss *Session) ID() string {
 	return ss.id
+}
+
+// Session is Interactive?
+func (session Session)  GetInteractive() bool {
+ return session.interactive
+}
+
+func (session Session)  SetInteractive(interactive bool) {
+	session.interactive = interactive
 }
