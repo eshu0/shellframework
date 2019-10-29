@@ -4,6 +4,7 @@ import (
 	"os"
 
 	kitlog "github.com/go-kit/kit/log"
+		kitlevel "github.com/go-kit/kit/log/level"
 )
 
 // main interface for the ShellLogger
@@ -13,16 +14,14 @@ type IShellLogger interface {
 	SetLog(log kitlog.Logger)
 
 	//log functions
-	GetLogLevel() int
-	SetLogLevel(int)
-	SetLogPrefix(string)
+	GetLogLevel() kitlevel.Option
+	SetLogLevel(kitlevel.Option)
+	//SetLogPrefix(string)
 
-	LogFatal(string, ...interface{})
-	LogError(string, ...interface{})
-	LogWarn(string, ...interface{})
-	LogInfo(string, ...interface{})
-	LogDebug(string, ...interface{})
-	LogTrace(string, ...interface{})
+	LogError(data ...interface{})
+	LogWarn(data ...interface{})
+	LogInfo(data ...interface{})
+	LogDebug(data ...interface{})
 
 	LogPrintln(msg string)
 	LogPrintlnf(msg string, a ...interface{})
