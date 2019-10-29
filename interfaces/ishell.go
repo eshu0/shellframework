@@ -28,7 +28,7 @@ type IShell interface {
 
 	//methods run the shell
 	Run()
-	RunInteractive()
+	
 	ParseInput(input string) []ICommandInput
 
 	// print functions

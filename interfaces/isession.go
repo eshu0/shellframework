@@ -4,4 +4,9 @@ package sfinterfaces
 type ISession interface {
 	//The Identifying String
 	ID() string
+
+	// Session is Interactive?
+	GetInteractive() bool
+	SetInteractive(interactive bool)
+
 }
