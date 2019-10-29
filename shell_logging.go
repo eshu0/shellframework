@@ -3,6 +3,8 @@ package shellframework
 import (
 	"fmt"
 	"log"
+	"os"
+	"github.com/eshu0/shellframework/interfaces"
 )
 
 type SimpleShellLog struct {
@@ -23,60 +25,77 @@ func NewSimpleShellLog(logger *log.Logger) SimpleShellLog {
 	return ssl
 }
 
-func (shell *SimpleShellLog) SetLogPrefix(prefix string) {
-	if !PointerInvalid(shell.log) {
-		shell.log.SetPrefix(prefix)
+func (ssl *SimpleShellLog) SetLogPrefix(prefix string) {
+	if !PointerInvalid(ssl.log) {
+		ssl.log.SetPrefix(prefix)
 	}
 }
 
-func (shell *SimpleShellLog) SetLogLevel(lvl int) {
-	shell.loglevel = lvl
+func (ssl *SimpleShellLog) SetLogLevel(lvl int) {
+	ssl.loglevel = lvl
 }
 
-func (shell *SimpleShellLog) GetLogLevel() int {
-	return shell.loglevel
+func (ssl *SimpleShellLog) GetLogLevel() int {
+	return ssl.loglevel
 }
 
-func (shell *SimpleShellLog) LogDebug(msg string, a ...interface{}) {
-	shell.LogPrintln(fmt.Sprintf(msg, a...))
+func (ssl *SimpleShellLog) LogDebug(msg string, a ...interface{}) {
+	ssl.LogPrintln(fmt.Sprintf(msg, a...))
 }
 
-func (shell *SimpleShellLog) LogTrace(msg string, a ...interface{}) {
-	shell.LogPrintln(fmt.Sprintf(msg, a...))
+func (ssl *SimpleShellLog) LogTrace(msg string, a ...interface{}) {
+	ssl.LogPrintln(fmt.Sprintf(msg, a...))
 }
 
-func (shell *SimpleShellLog) LogWarn(msg string, a ...interface{}) {
-	shell.LogPrintln(fmt.Sprintf(msg, a...))
+func (ssl *SimpleShellLog) LogWarn(msg string, a ...interface{}) {
+	ssl.LogPrintln(fmt.Sprintf(msg, a...))
 }
 
-func (shell *SimpleShellLog) LogInfo(msg string, a ...interface{}) {
-	shell.LogPrintln(fmt.Sprintf(msg, a...))
+func (ssl *SimpleShellLog) LogInfo(msg string, a ...interface{}) {
+	ssl.LogPrintln(fmt.Sprintf(msg, a...))
 }
-func (shell *SimpleShellLog) LogError(msg string, a ...interface{}) {
-	shell.LogPrintln(fmt.Sprintf(msg, a...))
-
-}
-
-func (shell *SimpleShellLog) LogFatal(msg string, a ...interface{}) {
-	shell.LogPrintln(fmt.Sprintf(msg, a...))
+func (ssl *SimpleShellLog) LogError(msg string, a ...interface{}) {
+	ssl.LogPrintln(fmt.Sprintf(msg, a...))
 }
 
-func (shell *SimpleShellLog) LogPrintln(msg string) {
-	if !PointerInvalid(shell.log) {
-		shell.log.Println(msg)
+func (ssl *SimpleShellLog) LogFatal(msg string, a ...interface{}) {
+	ssl.LogPrintln(fmt.Sprintf(msg, a...))
+}
+
+func (ssl *SimpleShellLog) LogPrintln(msg string) {
+	if !PointerInvalid(ssl.log) {
+		ssl.log.Println(msg)
 	}
 }
 
-func (shell *SimpleShellLog) LogPrint(msg string) {
-	if !PointerInvalid(shell.log) {
-		shell.log.Print(msg)
+func (ssl *SimpleShellLog) LogPrint(msg string) {
+	if !PointerInvalid(ssl.log) {
+		ssl.log.Print(msg)
 	}
 }
 
-func (shell *SimpleShellLog) LogPrintlnf(msg string, a ...interface{}) {
-	shell.LogPrintln(fmt.Sprintf(msg, a...))
+func (ssl *SimpleShellLog) LogPrintlnf(msg string, a ...interface{}) {
+	ssl.LogPrintln(fmt.Sprintf(msg, a...))
 }
 
-func (shell *SimpleShellLog) LogPrintf(msg string, a ...interface{}) {
-	shell.LogPrint(fmt.Sprintf(msg, a...))
+func (ssl *SimpleShellLog) LogPrintf(msg string, a ...interface{}) {
+	ssl.LogPrint(fmt.Sprintf(msg, a...))
+}
+
+func (ssl *SimpleShellLog) OpenSessionFileLog(session sfinterfaces.ISession) (*os.File) {
+	f, err := os.OpenFile("simpleshell.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	// check error
+	if err != nil {
+		panic(err)
+	}
+
+	log := log.New(f, session.ID()+" ", log.LstdFlags)
+
+	// check log is valid
+	if log == nil {
+		panic("log is nil")
+	}
+	ssl.log = log
+	ssl.loglevel = -1
+	return f
 }
