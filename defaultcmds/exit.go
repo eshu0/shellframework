@@ -13,9 +13,5 @@ func (command ExitCommand) Register(shell sfinterfaces.IShell) {
 
 //Exit the terminal
 func Exit(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
-	shell := command.GetShell()
-	log := *shell.GetLog()
-
-	log.LogPrintln("exit() command called")
 	return command.NewExitSuccessCommandResult()
 }

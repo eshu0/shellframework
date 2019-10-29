@@ -37,8 +37,6 @@ func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 
 	pflags := fg.Parsedflags()
 	env := shell.GetEnvironment()
-
-	log.LogPrintln("env() command called")
 	/*
 		for _, sflag := range pflags {
 			// have to derefence due to the interface
@@ -67,8 +65,8 @@ func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 	//keyflag := *kflag
 	//valueflag := *vflag
 
-	log.LogPrintlnf("env() key GetName = %s", kflag.GetName())
-	log.LogPrintlnf("env() value GetName = %s", vflag.GetName())
+	log.LogDebug("env()", "key GetName = %s", kflag.GetName())
+	log.LogDebug("env()", "value GetName = %s", vflag.GetName())
 
 	//if keyflag != nil && valueflag != nil {
 	//shell.LogPrintln("env() keyflag and valueflag is not nil")
@@ -76,8 +74,8 @@ func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 	kstr := kflag.GetStringValue()
 	vstr := vflag.GetStringValue()
 
-	log.LogPrintlnf("env() kstr = %s", *kstr)
-	log.LogPrintlnf("env() vstr = %s", *vstr)
+	log.LogDebug("env()", "kstr = %s", *kstr)
+	log.LogDebug("env()", "vstr = %s", *vstr)
 
 	//if len(arguements.Args) >= 0 {
 	//if keyflag != nil && kstr != nil && *kstr != "" && valueflag != nil && vstr != nil && *vstr != "" {
@@ -90,8 +88,8 @@ func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 		env.SetVariable(env.MakeSingleVariable(*kstr, *vstr))
 		//}
 	} else {
-		log.LogPrintlnf("env() skipping: kstr = %s matched default %s", *kstr, kflag.GetDefaultStringValue())
-		log.LogPrintlnf("env() skipping: vstr = %s macthed default %s", *vstr, vflag.GetDefaultStringValue())
+		log.LogDebug("env()", "skipping: kstr = %s matched default %s", *kstr, kflag.GetDefaultStringValue())
+		log.LogDebug("env()", "skipping: vstr = %s macthed default %s", *vstr, vflag.GetDefaultStringValue())
 	}
 
 	//}
@@ -101,7 +99,7 @@ func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 	listflag := pflags["list"]
 	//lbool := listflag.GetBoolValue()
 	if listflag != nil { //&& lbool == true {
-		log.LogPrintln("env() listflag is not nil")
+		log.LogDebug("env()", "listflag is not nil")
 
 		//	if listflag != nil && lbool != nil && *lbool == true {
 		namevalues := env.GetNameValues()

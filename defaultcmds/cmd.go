@@ -16,7 +16,6 @@ func Cmd(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 
 	shell := command.GetShell()
 	log := *shell.GetLog()
-	log.LogPrintln("cmd() command called")
 	env := shell.GetEnvironment()
 
 	items, exists := env.GetVariable(sfinterfaces.LastCommands)
@@ -24,7 +23,7 @@ func Cmd(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 		shell.Println("Environment has no last commands")
 	} else {
 		for _, cmd := range items.GetValues() {
-			log.LogPrintln("cmd() command called")
+			log.LogDebug("cmd()", " command called")
 			shell.Println(cmd)
 		}
 	}
