@@ -9,15 +9,6 @@ import (
 	"github.com/eshu0/shellframework/interfaces"
 )
 
-/*
-*
-*	DEFAULT SHELL ENVIRONMENT VARIABLES
-*
- */
-const EnvironmentFilename string = "env"
-const LastCommands string = "LastCommands"
-const PersistEnvironment string = "PersistEnvironment"
-
 //
 // SHELL Printing
 //
@@ -318,7 +309,7 @@ func (shell *Shell) Run() {
 
 	// pointer is valid?
 	if !PointerInvalid(env) {
-		env.LoadFile(EnvironmentFilename)
+		env.LoadFile(sfinterfaces.EnvironmentFilename)
 	}
 
 	shell.PrintDetails()
@@ -348,7 +339,7 @@ func (shell *Shell) Run() {
 					panic(err)
 				} else if key == keyboard.KeyArrowUp {
 					if !PointerInvalid(env) {
-						envvar, exists := env.GetVariable(LastCommands)
+						envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
 						if exists {
 							wc := envvar
 							lc := wc.GetValues()
@@ -365,7 +356,7 @@ func (shell *Shell) Run() {
 					}
 				} else if key == keyboard.KeyArrowDown {
 					if !PointerInvalid(env) {
-						envvar, exists := env.GetVariable(LastCommands)
+						envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
 						if exists {
 							wc := envvar
 							lc := wc.GetValues()
@@ -398,12 +389,12 @@ func (shell *Shell) Run() {
 			// pointer is valid?
 			if !PointerInvalid(env) {
 
-				envvar, exists := env.GetVariable(LastCommands)
+				envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
 
 				if !exists {
 					var cmds []string
 					cmds = append(cmds, text)
-					env.SetVariable(env.MakeMultiVariable(LastCommands, cmds))
+					env.SetVariable(env.MakeMultiVariable(sfinterfaces.LastCommands, cmds))
 				} else {
 					wc := envvar
 					lc := wc.GetValues()
@@ -480,11 +471,11 @@ func (shell *Shell) Run() {
 			}
 
 			if !PointerInvalid(env) {
-				env.SaveToFile(EnvironmentFilename)
+				env.SaveToFile(sfinterfaces.EnvironmentFilename)
 			}
 
 		} // for loop
-		
+
 	}else{
 		reader := bufio.NewReader(shell.in)
 		for {
@@ -513,12 +504,12 @@ func (shell *Shell) Run() {
 				// pointer is valid?
 				if !PointerInvalid(env) {
 
-					envvar, exists := env.GetVariable(LastCommands)
+					envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
 
 					if !exists {
 						var cmds []string
 						cmds = append(cmds, text)
-						env.SetVariable(env.MakeMultiVariable(LastCommands, cmds))
+						env.SetVariable(env.MakeMultiVariable(sfinterfaces.LastCommands, cmds))
 					} else {
 						wc := envvar
 						lc := wc.GetValues()
@@ -596,7 +587,7 @@ func (shell *Shell) Run() {
 			}
 
 			if !PointerInvalid(env) {
-				env.SaveToFile(EnvironmentFilename)
+				env.SaveToFile(sfinterfaces.EnvironmentFilename)
 			}
 
 		} // for loop

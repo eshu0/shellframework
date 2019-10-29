@@ -122,6 +122,27 @@ func (command *Command) SetFlags(flgs sfinterfaces.IFlags) {
 	command.flags = flgs
 }
 
+func (command *Command) NewSuccessCommandResult(msg string) sfinterfaces.ICommandResult {
+	//var sr CommandResult
+	sr := &CommandResult{}
+	sr.err = nil
+	sr.sucess = true
+	sr.result = msg
+	sr.exitshell = false
+	return sr
+}
+
+func (command *Command) NewExitSuccessCommandResult() sfinterfaces.ICommandResult {
+	//var sr CommandResult
+	sr := &CommandResult{}
+	sr.err = nil
+	sr.sucess = true
+	sr.result = ""
+	sr.exitshell = true
+	return sr
+}
+
+
 type CommandInput struct {
 	name     string
 	rawinput string
@@ -186,24 +207,4 @@ func (cresult *CommandResult) Err() error {
 
 func (cresult *CommandResult) Result() string {
 	return cresult.result
-}
-
-func NewSuccessCommandResult(msg string) sfinterfaces.ICommandResult {
-	//var sr CommandResult
-	sr := &CommandResult{}
-	sr.err = nil
-	sr.sucess = true
-	sr.result = msg
-	sr.exitshell = false
-	return sr
-}
-
-func NewExitSuccessCommandResult() sfinterfaces.ICommandResult {
-	//var sr CommandResult
-	sr := &CommandResult{}
-	sr.err = nil
-	sr.sucess = true
-	sr.result = ""
-	sr.exitshell = true
-	return sr
 }
