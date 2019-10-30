@@ -687,7 +687,7 @@ func (shell *Shell) RegisterCommandFlag(cmd string, flag sfinterfaces.IFlag) {
 		// make sure this pointer is valid
 
 		if strings.ToLower(shell.commands[i].GetName()) == strings.ToLower(cmd) {
-			log.LogError("RegisterCommandFlag()", "'%s' macthed '%s'", shell.commands[i].GetName(), cmd)
+			log.LogDebug("RegisterCommandFlag()", "'%s' macthed '%s'", shell.commands[i].GetName(), cmd)
 
 			// get the iflags from the command
 			flgs := shell.commands[i].GetFlags()
@@ -697,7 +697,7 @@ func (shell *Shell) RegisterCommandFlag(cmd string, flag sfinterfaces.IFlag) {
 			flags = append(flags, flag)
 			flgs.SetFlags(flags)
 
-			log.LogError("RegisterCommandFlag()", "%d set the flags", i)
+			log.LogDebug("RegisterCommandFlag()", "%d set the flags", i)
 			shell.commands[i].SetFlags(flgs)
 			return
 

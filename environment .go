@@ -204,7 +204,7 @@ func (env *Environment) LoadFile(path string) {
 		}
 
 		for key, ev := range f {
-			log.LogError("LoadFile()", "SetVariable %s with %s ", key, strings.Join(ev.GetValues(), ","))
+			log.LogDebug("LoadFile()", "SetVariable %s with %s ", key, strings.Join(ev.GetValues(), ","))
 			env.SetVariable(env.MakeMultiVariable(key, ev.GetValues()))
 		}
 

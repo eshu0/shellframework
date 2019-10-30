@@ -57,52 +57,48 @@ func (command *Command) Match(incmd sfinterfaces.ICommandInput) bool {
 }
 
 func (command *Command) Process() sfinterfaces.ICommandResult {
-	// get the shell for logging
 
+	// get the shell for logging
 	shell := command.GetShell()
 	log := *shell.GetLog()
-	/*
-		ci := command.GetCommandInput()
 
-		args := ci.GetArgs()
-		shell.LogPrintlnf("Process(): Number of args: %d", len(args))
-	*/
+	ci := command.GetCommandInput()
+
+	args := ci.GetArgs()
+	log.LogDebug("Process()", "Number of args: %d", len(args))
 
 	flgs := command.GetFlags()
 
 	log.LogDebug("Process()", "Parsing the flags")
 	flgs.Parse()
-	/*
 
+	parsedflags := flgs.Parsedflags()
 
-		//flgset := carg.GetParsedFlagSet()
-		parsedflags := flgs.Parsedflags()
+	log.LogDebug("Process()", "Number of args: %d", len(args))
 
-		shell.LogPrintlnf("Process(): Number of args: %d", len(args))
+	// have to derefence due to the interface
+	flgset := flgs.GetFlagSet()
 
-		if args != nil && len(args) > 0 && parsedflags != nil {
+	if flgset != nil {
+		log.LogDebug("Process()", "flagset not nil - Parsing flagset")
+		flgset.Parse(args)
 
-			for _, sflag := range parsedflags {
-				// have to derefence due to the interface
-				//sflag := *p
-				flgset := flgs.GetFlagSet()
-
-				if flgset != nil {
-					shell.LogPrintln("Process(): flagset not nil - Parsing flagset")
-					flgset.Parse(args)
-
-					for _, arg := range flgset.Args() {
-						shell.LogPrintlnf("Process(): Argument: %s", arg)
-					}
-				} else {
-					shell.LogPrintln("Process(): flagset was nil ")
-				}
-			}
-
-		} else {
-			shell.LogPrintln("Process(): Not parsing flagset")
+		for _, arg := range flgset.Args() {
+			log.LogDebug("Process()", "Argument: %s", arg)
 		}
-	*/
+	} else {
+		log.LogDebug("Process()", "flagset was nil ")
+	}
+
+	for _, sflag := range parsedflags {
+		log.LogDebug("Process()", "Parsed Flag - GetName %s", sflag.GetName())
+		log.LogDebug("Process()", "Parsed Flag - GetStringValue %s", sflag.GetStringValue())
+		log.LogDebug("Process()", "Parsed Flag - GetBoolValue %s", sflag.GetBoolValue())
+		log.LogDebug("Process()", "Parsed Flag - GetIntValue %s", sflag.GetIntValue())
+		log.LogDebug("Process()", "Parsed Flag - GetFlagType %s", sflag.GetFlagType())
+
+	}
+
 	log.LogDebug("Process()", "running command %s", command.GetName())
 	result := command.operator(command)
 	log.LogDebug("Process()", "finished command %s", command.GetName())
@@ -113,12 +109,8 @@ func (command *Command) Process() sfinterfaces.ICommandResult {
 	return result
 }
 
-/*
-func (command *Command) Args() []string {
-	return command.args
-}
-*/
-
+// This will regsiter the command with the shell
+// If adding commands then implement this method
 func (command *Command) Register(shell sfinterfaces.IShell) {
 
 }
