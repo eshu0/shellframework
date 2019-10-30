@@ -19,8 +19,8 @@ func Echo(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 
 	ec := command.GetCommandInput()
 	shell.Println(ec.GetInputWithOutCommand())
-	log.LogDebug("echo():", "command name: %s", ec.GetCommandName())
-	log.LogDebug("echo():", "raw input: %s", ec.GetRawInput())
-	log.LogDebug("echo():", "printing: %s", ec.GetInputWithOutCommand())
+	log.LogDebugf("echo()", "command name: %s", ec.GetCommandName())
+	log.LogDebugf("echo()", "raw input: %s", ec.GetRawInput())
+	log.LogDebugf("echo()", "printing: %s", ec.GetInputWithOutCommand())
 	return command.NewSuccessCommandResult("")
 }

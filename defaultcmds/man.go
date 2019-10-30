@@ -20,13 +20,13 @@ func Man(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 	ci := command.GetCommandInput()
 	args := ci.GetArgs()
 
-	log.LogDebug("man()", "Number of args: %d", len(args))
+	log.LogDebugf("man()", "Number of args: %d", len(args))
 
 	if len(args) >= 1 {
 		lowername := strings.ToLower(strings.TrimSpace(args[0]))
 		for _, command := range shell.GetCommands() {
 			if strings.ToLower(command.GetName()) == lowername {
-				log.LogDebug("man()", "Command '%s' matched", command.GetName())
+				log.LogDebugf("man()", "Command '%s' matched", command.GetName())
 
 				shell.Printlnf("Command Name: %s", command.GetName())
 				shell.Printlnf("Description: %s", command.GetDescription())

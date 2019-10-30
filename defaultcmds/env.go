@@ -65,8 +65,8 @@ func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 	//keyflag := *kflag
 	//valueflag := *vflag
 
-	log.LogDebug("env()", "key GetName = %s", kflag.GetName())
-	log.LogDebug("env()", "value GetName = %s", vflag.GetName())
+	log.LogDebugf("env()", "key GetName = %s", kflag.GetName())
+	log.LogDebugf("env()", "value GetName = %s", vflag.GetName())
 
 	//if keyflag != nil && valueflag != nil {
 	//shell.LogPrintln("env() keyflag and valueflag is not nil")
@@ -74,8 +74,8 @@ func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 	kstr := kflag.GetStringValue()
 	vstr := vflag.GetStringValue()
 
-	log.LogDebug("env()", "kstr = %s", *kstr)
-	log.LogDebug("env()", "vstr = %s", *vstr)
+	log.LogDebugf("env()", "kstr = %s", *kstr)
+	log.LogDebugf("env()", "vstr = %s", *vstr)
 
 	//if len(arguements.Args) >= 0 {
 	//if keyflag != nil && kstr != nil && *kstr != "" && valueflag != nil && vstr != nil && *vstr != "" {
@@ -88,8 +88,8 @@ func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 		env.SetVariable(env.MakeSingleVariable(*kstr, *vstr))
 		//}
 	} else {
-		log.LogDebug("env()", "skipping: kstr = %s matched default %s", *kstr, kflag.GetDefaultStringValue())
-		log.LogDebug("env()", "skipping: vstr = %s macthed default %s", *vstr, vflag.GetDefaultStringValue())
+		log.LogDebugf("env()", "skipping: kstr = %s matched default %s", *kstr, kflag.GetDefaultStringValue())
+		log.LogDebugf("env()", "skipping: vstr = %s macthed default %s", *vstr, vflag.GetDefaultStringValue())
 	}
 
 	//}
@@ -99,7 +99,7 @@ func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 	listflag := pflags["list"]
 	//lbool := listflag.GetBoolValue()
 	if listflag != nil { //&& lbool == true {
-		log.LogDebug("env()", "listflag is not nil")
+		log.LogDebugf("env()", "listflag is not nil")
 
 		//	if listflag != nil && lbool != nil && *lbool == true {
 		namevalues := env.GetNameValues()
