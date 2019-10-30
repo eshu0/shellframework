@@ -414,13 +414,13 @@ func (shell *Shell) Run() {
 			endexecution := false
 			for _, ec := range executionorder {
 
-				log.LogDebug("Run()", "Found '%s' execution command  ", ec.GetCommandName())
+				log.LogDebugf("Run()", "Found '%s' execution command  ", ec.GetCommandName())
 				if endexecution {
 					break
 				}
 
 				if cmdres != "" {
-					log.LogDebug("Run()", "Previous command finished with result %s override the args", cmdres)
+					log.LogDebugf("Run()", "Previous command finished with result %s override the args", cmdres)
 					var pargs []string
 					pargs = append(pargs, cmdres)
 					ec.SetArgs(pargs)
@@ -433,29 +433,29 @@ func (shell *Shell) Run() {
 						// not sure this is the best thing to do
 						// this could be made more comperhensive
 						// we set this here so prasing doesn;t affect the input
-						log.LogDebug("Run()", "Started SetCommandInput for '%s' ", cmd.GetName())
+						log.LogDebugf("Run()", "Started SetCommandInput for '%s' ", cmd.GetName())
 						cmd.SetCommandInput(ec)
-						log.LogDebug("Run()", "Finished SetCommandInput for '%s' ", cmd.GetName())
+						log.LogDebugf("Run()", "Finished SetCommandInput for '%s' ", cmd.GetName())
 
-						log.LogDebug("Run()", "Started command '%s' ", cmd.GetName())
+						log.LogDebugf("Run()", "Started command '%s' ", cmd.GetName())
 						res := cmd.Process()
-						log.LogDebug("Run()", "Finished command '%s'  ", cmd.GetName())
+						log.LogDebugf("Run()", "Finished command '%s'  ", cmd.GetName())
 
 						if res.ExitShell() {
 							shouldcontinue = false
 						} else {
 
 							if res.Sucessful() {
-								log.LogDebug("Run()", "Command '%s' was sucessful ", cmd.GetName())
+								log.LogDebugf("Run()", "Command '%s' was sucessful ", cmd.GetName())
 								cmdres = res.Result()
 							} else {
 								err := res.Err()
 								if err != nil {
 									shell.Printlnf("'%s' failed: %s ", cmd.GetName(), err.Error())
-									log.LogDebug("Run()", "Error with command '%s' following error provided: %s ", cmd.GetName(), err.Error())
+									log.LogDebugf("Run()", "Error with command '%s' following error provided: %s ", cmd.GetName(), err.Error())
 								} else {
 									shell.Printlnf("Error with command '%s' no error provided ", cmd.GetName())
-									log.LogDebug("Run()", "Error with command '%s' no error provided  ", cmd.GetName())
+									log.LogDebugf("Run()", "Error with command '%s' no error provided  ", cmd.GetName())
 								}
 								endexecution = true
 							}
@@ -496,7 +496,7 @@ func (shell *Shell) Run() {
 				text, readerr := reader.ReadString('\n')
 
 				if readerr != nil {
-					log.LogDebug("Run()", "Reading input has provided following err '%s'", readerr.Error())
+					log.LogDebugf("Run()", "Reading input has provided following err '%s'", readerr.Error())
 					break
 					// break out for loop
 				}
@@ -531,13 +531,13 @@ func (shell *Shell) Run() {
 				endexecution := false
 				for _, ec := range executionorder {
 
-					log.LogDebug("Run()", "Found '%s' execution command  ", ec.GetCommandName())
+					log.LogDebugf("Run()", "Found '%s' execution command  ", ec.GetCommandName())
 					if endexecution {
 						break
 					}
 
 					if cmdres != "" {
-						log.LogDebug("Run()", "Previous command finished with result %s override the args", cmdres)
+						log.LogDebugf("Run()", "Previous command finished with result %s override the args", cmdres)
 						var pargs []string
 						pargs = append(pargs, cmdres)
 						ec.SetArgs(pargs)
@@ -564,10 +564,10 @@ func (shell *Shell) Run() {
 									err := res.Err()
 									if err != nil {
 										shell.Printlnf("'%s' failed: %s ", cmd.GetName(), err.Error())
-										log.LogDebug("Run()", "Error with command '%s' following error provided: %s ", cmd.GetName(), err.Error())
+										log.LogDebugf("Run()", "Error with command '%s' following error provided: %s ", cmd.GetName(), err.Error())
 									} else {
 										shell.Printlnf("Error with command '%s' no error provided ", cmd.GetName())
-										log.LogDebug("Run()", "Error with command '%s' no error provided  ", cmd.GetName())
+										log.LogDebugf("Run()", "Error with command '%s' no error provided  ", cmd.GetName())
 									}
 									endexecution = true
 								}
@@ -687,7 +687,7 @@ func (shell *Shell) RegisterCommandFlag(cmd string, flag sfinterfaces.IFlag) {
 		// make sure this pointer is valid
 
 		if strings.ToLower(shell.commands[i].GetName()) == strings.ToLower(cmd) {
-			log.LogDebug("RegisterCommandFlag()", "'%s' macthed '%s'", shell.commands[i].GetName(), cmd)
+			log.LogDebugf("RegisterCommandFlag()", "'%s' macthed '%s'", shell.commands[i].GetName(), cmd)
 
 			// get the iflags from the command
 			flgs := shell.commands[i].GetFlags()
@@ -697,7 +697,7 @@ func (shell *Shell) RegisterCommandFlag(cmd string, flag sfinterfaces.IFlag) {
 			flags = append(flags, flag)
 			flgs.SetFlags(flags)
 
-			log.LogDebug("RegisterCommandFlag()", "%d set the flags", i)
+			log.LogDebugf("RegisterCommandFlag()", "%d set the flags", i)
 			shell.commands[i].SetFlags(flgs)
 			return
 

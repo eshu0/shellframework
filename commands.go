@@ -65,7 +65,7 @@ func (command *Command) Process() sfinterfaces.ICommandResult {
 	ci := command.GetCommandInput()
 
 	args := ci.GetArgs()
-	log.LogDebug("Process()", "Number of args: %d", len(args))
+	log.LogDebugf("Process()", "Number of args: %d", len(args))
 
 	flgs := command.GetFlags()
 
@@ -74,7 +74,7 @@ func (command *Command) Process() sfinterfaces.ICommandResult {
 
 	parsedflags := flgs.Parsedflags()
 
-	log.LogDebug("Process()", "Number of args: %d", len(args))
+	log.LogDebugf("Process()", "Number of args: %d", len(args))
 
 	// have to derefence due to the interface
 	flgset := flgs.GetFlagSet()
@@ -84,28 +84,28 @@ func (command *Command) Process() sfinterfaces.ICommandResult {
 		flgset.Parse(args)
 
 		for _, arg := range flgset.Args() {
-			log.LogDebug("Process()", "Argument: %s", arg)
+			log.LogDebugf("Process()", "Argument: %s", arg)
 		}
 	} else {
-		log.LogDebug("Process()", "flagset was nil ")
+		log.LogDebugf("Process()", "flagset was nil ")
 	}
 
 	for _, sflag := range parsedflags {
-		log.LogDebug("Process()", "Parsed Flag - GetName %s", sflag.GetName())
-		log.LogDebug("Process()", "Parsed Flag - GetStringValue %s", sflag.GetStringValue())
-		log.LogDebug("Process()", "Parsed Flag - GetBoolValue %s", sflag.GetBoolValue())
-		log.LogDebug("Process()", "Parsed Flag - GetIntValue %s", sflag.GetIntValue())
-		log.LogDebug("Process()", "Parsed Flag - GetFlagType %s", sflag.GetFlagType())
+		log.LogDebugf("Process()", "Parsed Flag - GetName %s", sflag.GetName())
+		log.LogDebugf("Process()", "Parsed Flag - GetStringValue %s", sflag.GetStringValue())
+		log.LogDebugf("Process()", "Parsed Flag - GetBoolValue %s", sflag.GetBoolValue())
+		log.LogDebugf("Process()", "Parsed Flag - GetIntValue %s", sflag.GetIntValue())
+		log.LogDebugf("Process()", "Parsed Flag - GetFlagType %s", sflag.GetFlagType())
 
 	}
 
-	log.LogDebug("Process()", "running command %s", command.GetName())
+	log.LogDebugf("Process()", "running command %s", command.GetName())
 	result := command.operator(command)
-	log.LogDebug("Process()", "finished command %s", command.GetName())
-	log.LogDebug("Process()", "result - Successful %t", result.Sucessful())
-	log.LogDebug("Process()", "result - ExitShell %t", result.ExitShell())
-	log.LogDebug("Process()", "result - Error %s", result.Err())
-	log.LogDebug("Process()", "result - Result %s", result.Result())
+	log.LogDebugf("Process()", "finished command %s", command.GetName())
+	log.LogDebugf("Process()", "result - Successful %t", result.Sucessful())
+	log.LogDebugf("Process()", "result - ExitShell %t", result.ExitShell())
+	log.LogDebugf("Process()", "result - Error %s", result.Err())
+	log.LogDebugf("Process()", "result - Result %s", result.Result())
 	return result
 }
 

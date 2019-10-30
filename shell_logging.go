@@ -64,24 +64,21 @@ func (ssl *ShellLogger) LogError(cmd string, data ...interface{}) {
 	kitlevel.Error(ssl.log).Log("cmd", cmd, "data", fmt.Sprintf("%s", data))
 }
 
-// These all print at Info level which displays in the log by default
-/*
-func (ssl *ShellLogger) LogPrintln(msg string) {
-	ssl.LogPrint(fmt.Sprintf("%s \n", msg))
+// the logging functions are here
+func (ssl *ShellLogger) LogDebugf(cmd string, msg string, data ...interface{}) {
+	kitlevel.Debug(ssl.log).Log("cmd", cmd, "data", fmt.Sprintf(msg, data...))
 }
 
-func (ssl *ShellLogger) LogPrint(msg string) {
-	ssl.LogInfo("LogPrint", msg)
+func (ssl *ShellLogger) LogWarnf(cmd string, msg string, data ...interface{}) {
+	kitlevel.Warn(ssl.log).Log("cmd", cmd, "data", fmt.Sprintf(msg, data...))
 }
 
-func (ssl *ShellLogger) LogPrintlnf(msg string, a ...interface{}) {
-	ssl.LogPrintln(fmt.Sprintf(msg, a...))
+func (ssl *ShellLogger) LogInfof(cmd string, msg string, data ...interface{}) {
+	kitlevel.Info(ssl.log).Log("cmd", cmd, "data", fmt.Sprintf(msg, data...))
 }
-
-func (ssl *ShellLogger) LogPrintf(msg string, a ...interface{}) {
-	ssl.LogPrint(fmt.Sprintf(msg, a...))
+func (ssl *ShellLogger) LogErrorf(cmd string, msg string, data ...interface{}) {
+	kitlevel.Error(ssl.log).Log("cmd", cmd, "data", fmt.Sprintf(msg, data...))
 }
-*/
 
 func (ssl *ShellLogger) OpenSessionFileLog(session sfinterfaces.ISession) *os.File {
 	f, err := os.OpenFile("simpleshell.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)

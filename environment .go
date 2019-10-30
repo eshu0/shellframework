@@ -159,16 +159,16 @@ func (env *Environment) SaveToFile(path string) {
 		namevalues := env.GetNameValues()
 		bytes, err := json.MarshalIndent(namevalues, "", "\t") //json.Marshal(p)
 		if err != nil {
-			log.LogError("SaveToFile()", "Marshal json for %s failed with %s ", path, err.Error())
+			log.LogErrorf("SaveToFile()", "Marshal json for %s failed with %s ", path, err.Error())
 			return
 		}
 
 		err = ioutil.WriteFile(path+".json", bytes, 0644)
 		if err != nil {
-			log.LogError("SaveToFile()", "Saving %s failed with %s ", path, err.Error())
+			log.LogErrorf("SaveToFile()", "Saving %s failed with %s ", path, err.Error())
 		}
 	} else {
-		log.LogError("SaveToFile()", "'%s' was not found to save", path)
+		log.LogErrorf("SaveToFile()", "'%s' was not found to save", path)
 	}
 }
 
@@ -189,7 +189,7 @@ func (env *Environment) LoadFile(path string) {
 		filepath := path + ".json"
 		bytes, err := ioutil.ReadFile(filepath) //ReadAll(jsonFile)
 		if err != nil {
-			log.LogError("LoadFile()", "Reading '%s' failed with %s ", filepath, err.Error())
+			log.LogErrorf("LoadFile()", "Reading '%s' failed with %s ", filepath, err.Error())
 			return
 		}
 		var f map[string]EnvironmentVariable
@@ -199,12 +199,12 @@ func (env *Environment) LoadFile(path string) {
 		err = json.Unmarshal(bytes, &f)
 
 		if err != nil {
-			log.LogError("LoadFile()", " Loading %s failed with %s ", filepath, err.Error())
+			log.LogErrorf("LoadFile()", " Loading %s failed with %s ", filepath, err.Error())
 			return
 		}
 
 		for key, ev := range f {
-			log.LogDebug("LoadFile()", "SetVariable %s with %s ", key, strings.Join(ev.GetValues(), ","))
+			log.LogDebugf("LoadFile()", "SetVariable %s with %s ", key, strings.Join(ev.GetValues(), ","))
 			env.SetVariable(env.MakeMultiVariable(key, ev.GetValues()))
 		}
 
@@ -233,7 +233,7 @@ func (env *Environment) LoadFile(path string) {
 			}
 		*/
 	} else {
-		log.LogError("LoadFile()", "'%s' was not found to load", path)
+		log.LogErrorf("LoadFile()", "'%s' was not found to load", path)
 	}
 }
 

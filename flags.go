@@ -127,21 +127,21 @@ func (flgs *CommandFlags) Parse() {
 	// parsed flags
 	flgs.parsedflags = make(map[string]sfinterfaces.IFlag)
 
-	log.LogDebug("Parse()", " Number of flags %d for %s ", len(flags), command.GetName())
+	log.LogDebugf("Parse()", " Number of flags %d for %s ", len(flags), command.GetName())
 
 	for _, flg := range flags {
 
 		//fr := &FlagResult{}
 		//fr.SetFlag(flg)
 		//_, alreadythere := sc.formal[flg.name]
-		log.LogDebug("Parse()", "Look up flag : %s ", flg.GetName())
+		log.LogDebugf("Parse()", "Look up flag : %s ", flg.GetName())
 		alreadythere := flgset.Lookup(flg.GetName())
 		if alreadythere == nil {
-			log.LogDebug("Parse()", "%s was nil which means it is missing so going to add", flg.GetName())
+			log.LogDebugf("Parse()", "%s was nil which means it is missing so going to add", flg.GetName())
 			flg.SetFlagValue(flgset)
 			flgs.parsedflags[flg.GetName()] = flg
 		} else {
-			log.LogDebug("Parse()", "%s was not nil so it will not be added", flg.GetName())
+			log.LogDebugf("Parse()", "%s was not nil so it will not be added", flg.GetName())
 		}
 
 	}
@@ -155,16 +155,16 @@ func (flgs *CommandFlags) Parse() {
 		// have to derefence due to the interface
 		//sflag := *p
 		// what type are we dealing with
-		log.LogDebug("Parse()", "flag.GetName: %s", sflag.GetName())
-		log.LogDebug("Parse()", "flag.GetFlagType: %d", sflag.GetFlagType())
+		log.LogDebugf("Parse()", "flag.GetName: %s", sflag.GetName())
+		log.LogDebugf("Parse()", "flag.GetFlagType: %d", sflag.GetFlagType())
 
 		switch sflag.GetFlagType() {
 		case 1:
-			log.LogDebug("Parse()", "flag.String: %s", sflag.GetStringValue())
+			log.LogDebugf("Parse()", "flag.String: %s", sflag.GetStringValue())
 		case 2:
-			log.LogDebug("Parse()", "flag.Boolean: %t", sflag.GetBoolValue())
+			log.LogDebugf("Parse()", "flag.Boolean: %t", sflag.GetBoolValue())
 		case 3:
-			log.LogDebug("Parse()", "flag.Integer: %d", sflag.GetIntValue())
+			log.LogDebugf("Parse()", "flag.Integer: %d", sflag.GetIntValue())
 		}
 
 	}
