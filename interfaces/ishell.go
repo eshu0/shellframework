@@ -55,4 +55,6 @@ type IShell interface {
 	RegisterCommandNewIntFlag(cmd string, name string, defaultvalue int, usage string)
 	RegisterCommandNewBoolFlag(cmd string, name string, defaultvalue bool, usage string)
 	RegisterCommandNewStringFlag(cmd string, name string, defaultvalue string, usage string)
+
+	RegisterCommandFlag(cmd string, flag IFlag)
 }

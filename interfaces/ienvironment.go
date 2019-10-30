@@ -25,6 +25,8 @@ type IEnvironment interface {
 	SetVariable(value IEnvironmentVariable)
 	GetVariable(key string) (IEnvironmentVariable, bool)
 
+	AddStringValue(key string, value string)
+
 	Print()
 }
 
