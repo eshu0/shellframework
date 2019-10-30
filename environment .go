@@ -65,6 +65,22 @@ func (env *Environment) Print() {
 	}
 }
 
+func (env *Environment) AddStringValue(key string, value string) {
+	envvar, exists := env.GetVariable(key)
+
+	if !exists {
+		var vals []string
+		vals = append(vals, value)
+		env.SetVariable(env.MakeMultiVariable(key, vals))
+	} else {
+		wc := envvar
+		lc := wc.GetValues()
+		lc = append(lc, value)
+		wc.SetValues(lc)
+		env.SetVariable(wc)
+	}
+}
+
 //func (env *SEnvironment) AddStringValue(key string, value string) {
 //if PointerInvalid(env) {
 //	return

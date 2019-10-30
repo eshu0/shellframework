@@ -345,7 +345,7 @@ func (shell *Shell) Run() {
 							lc := wc.GetValues()
 							if lastcommandpos >= len(lc)-1 {
 								shell.PrintInputMessage()
-								shell.Printf(" %s", lc[lastcommandpos])
+								shell.Printf("%s", lc[lastcommandpos])
 								lastcommandpos = 0
 							} else {
 								shell.PrintInputMessage()
@@ -362,11 +362,11 @@ func (shell *Shell) Run() {
 							lc := wc.GetValues()
 							if lastcommandpos >= len(lc)-1 {
 								shell.PrintInputMessage()
-								shell.Printf(" %s", lc[lastcommandpos])
+								shell.Printf("%s", lc[lastcommandpos])
 								lastcommandpos = 0
 							} else {
 								shell.PrintInputMessage()
-								shell.Printf(" %s", lc[lastcommandpos])
+								shell.Printf("%s", lc[lastcommandpos])
 								lastcommandpos = lastcommandpos - 1
 							}
 						}
@@ -389,19 +389,22 @@ func (shell *Shell) Run() {
 			// pointer is valid?
 			if !PointerInvalid(env) {
 
-				envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
+				env.AddStringValue(sfinterfaces.LastCommands, text)
+				/*
+					envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
 
-				if !exists {
-					var cmds []string
-					cmds = append(cmds, text)
-					env.SetVariable(env.MakeMultiVariable(sfinterfaces.LastCommands, cmds))
-				} else {
-					wc := envvar
-					lc := wc.GetValues()
-					lc = append(lc, text)
-					wc.SetValues(lc)
-					env.SetVariable(wc)
-				}
+					if !exists {
+						var cmds []string
+						cmds = append(cmds, text)
+						env.SetVariable(env.MakeMultiVariable(sfinterfaces.LastCommands, cmds))
+					} else {
+						wc := envvar
+						lc := wc.GetValues()
+						lc = append(lc, text)
+						wc.SetValues(lc)
+						env.SetVariable(wc)
+					}
+				*/
 
 			}
 
@@ -502,22 +505,24 @@ func (shell *Shell) Run() {
 				text = strings.Replace(text, "\n", "", -1)
 
 				// pointer is valid?
-				if !PointerInvalid(env) {
+				if !PointerInvalid(env) && text != "" && (len(text) > 0 && text[0] != '#') {
 
-					envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
+					env.AddStringValue(sfinterfaces.LastCommands, text)
+					/*
+						envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
 
-					if !exists {
-						var cmds []string
-						cmds = append(cmds, text)
-						env.SetVariable(env.MakeMultiVariable(sfinterfaces.LastCommands, cmds))
-					} else {
-						wc := envvar
-						lc := wc.GetValues()
-						lc = append(lc, text)
-						wc.SetValues(lc)
-						env.SetVariable(wc)
-					}
-
+						if !exists {
+							var cmds []string
+							cmds = append(cmds, text)
+							env.SetVariable(env.MakeMultiVariable(sfinterfaces.LastCommands, cmds))
+						} else {
+							wc := envvar
+							lc := wc.GetValues()
+							lc = append(lc, text)
+							wc.SetValues(lc)
+							env.SetVariable(wc)
+						}
+					*/
 				}
 
 				executionorder := shell.ParseInput(text)
@@ -651,26 +656,7 @@ func (shell *Shell) RegisterCommandNewBoolFlag(cmd string, name string, defaultv
 	sf.usage = usage
 	sf.flagtype = 2
 
-	for i, registeredcmd := range shell.commands {
-		// make sure this pointer is valid
-		if !PointerInvalid(registeredcmd) {
-			// use this method to add the simple command
-			if registeredcmd.GetName() == cmd {
-
-				// get the iflags from the command
-				flgs := registeredcmd.GetFlags()
-
-				// now get the underlying array list
-				flags := flgs.GetFlags()
-				flags = append(flags, sf)
-				flgs.SetFlags(flags)
-				// finished setting the list
-
-				shell.commands[i].SetFlags(flgs)
-				return
-			}
-		}
-	}
+	shell.RegisterCommandFlag(cmd, sf)
 }
 
 func (shell *Shell) RegisterCommandNewIntFlag(cmd string, name string, defaultvalue int, usage string) {
@@ -680,53 +666,41 @@ func (shell *Shell) RegisterCommandNewIntFlag(cmd string, name string, defaultva
 	sf.usage = usage
 	sf.flagtype = 3
 
-	for i, registeredcmd := range shell.commands {
-		// make sure this pointer is valid
-		if !PointerInvalid(registeredcmd) {
-			// use this method to add the simple command
-			if registeredcmd.GetName() == cmd {
-
-				// get the iflags from the command
-				flgs := registeredcmd.GetFlags()
-
-				// now get the underlying array list
-				flags := flgs.GetFlags()
-				flags = append(flags, sf)
-				flgs.SetFlags(flags)
-				// finished setting the list
-
-				shell.commands[i].SetFlags(flgs)
-				return
-			}
-		}
-	}
+	shell.RegisterCommandFlag(cmd, sf)
 }
 
 func (shell *Shell) RegisterCommandNewStringFlag(cmd string, name string, defaultvalue string, usage string) {
+
 	sf := &CommandFlag{}
 	sf.name = name
 	sf.defaultsvalue = defaultvalue
 	sf.usage = usage
 	sf.flagtype = 1
+	shell.RegisterCommandFlag(cmd, sf)
+}
 
-	for i, registeredcmd := range shell.commands {
+func (shell *Shell) RegisterCommandFlag(cmd string, flag sfinterfaces.IFlag) {
+
+	log := *shell.GetLog()
+
+	for i, _ := range shell.commands {
 		// make sure this pointer is valid
-		if !PointerInvalid(registeredcmd) {
-			// use this method to add the simple command
-			if registeredcmd.GetName() == cmd {
 
-				// get the iflags from the command
-				flgs := registeredcmd.GetFlags()
+		if strings.ToLower(shell.commands[i].GetName()) == strings.ToLower(cmd) {
+			log.LogError("RegisterCommandFlag()", "'%s' macthed '%s'", shell.commands[i].GetName(), cmd)
 
-				// now get the underlying array list
-				flags := flgs.GetFlags()
-				flags = append(flags, sf)
-				flgs.SetFlags(flags)
-				// finished setting the list
+			// get the iflags from the command
+			flgs := shell.commands[i].GetFlags()
 
-				shell.commands[i].SetFlags(flgs)
-				return
-			}
+			// now get the underlying array list
+			flags := flgs.GetFlags()
+			flags = append(flags, flag)
+			flgs.SetFlags(flags)
+
+			log.LogError("RegisterCommandFlag()", "%d set the flags", i)
+			shell.commands[i].SetFlags(flgs)
+			return
+
 		}
 	}
 }
