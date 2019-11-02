@@ -37,6 +37,7 @@ func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 
 	pflags := fg.Parsedflags()
 	env := shell.GetEnvironment()
+
 	/*
 		for _, sflag := range pflags {
 			// have to derefence due to the interface
@@ -98,7 +99,7 @@ func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 
 	listflag := pflags["list"]
 	//lbool := listflag.GetBoolValue()
-	if listflag != nil { //&& lbool == true {
+	if listflag != nil && listflag.GetBoolValue() != nil && *listflag.GetBoolValue() {
 		log.LogDebugf("env()", "listflag is not nil")
 
 		//	if listflag != nil && lbool != nil && *lbool == true {
