@@ -65,7 +65,7 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 	var ecs []sfinterfaces.ICommandInput
 	ecs = []sfinterfaces.ICommandInput{}
 	log := *shell.GetLog()
-	log.LogDebug("ParseInput()", "Parsing '%s' with length %d", input, len(input))
+	log.LogDebugf("ParseInput()", "Parsing '%s' with length %d", input, len(input))
 
 	var ecsposition int
 	var commandfound bool
@@ -112,7 +112,7 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 			//shell.LogPrintlnf("character %c at position %d", char, pos)
 
 			if char == '#' {
-				log.LogDebug("ParseInput()", "'%c' - Comment indentifier found at '%d' parsing finished", char, pos)
+				log.LogDebugf("ParseInput()", "'%c' - Comment indentifier found at '%d' parsing finished", char, pos)
 				break
 			}
 
@@ -122,7 +122,7 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 
 				if !commandfound {
 					cmndname := string(textr[commandfoundat : pos+1])
-					log.LogDebug("ParseInput()", "Parsed command '%s' from '%s'", cmndname, input)
+					log.LogDebugf("ParseInput()", "Parsed command '%s' from '%s'", cmndname, input)
 					ecs[ecsposition].SetCommandName(cmndname)
 
 				} else {
@@ -138,14 +138,14 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 					}
 
 					arg := string(textr[s : e+1])
-					log.LogDebug("ParseInput()", "Found argument terminator: argument read: %s", arg)
+					log.LogDebugf("ParseInput()", "Found argument terminator: argument read: %s", arg)
 					pargs := ecs[ecsposition].GetArgs()
 					pargs = append(pargs, arg)
 					ecs[ecsposition].SetArgs(pargs)
 				}
 
 				rawi := string(textr[rawpos : pos+1])
-				log.LogDebug("ParseInput()", "Parsed rawinput '%s' from '%s'", rawi, input)
+				log.LogDebugf("ParseInput()", "Parsed rawinput '%s' from '%s'", rawi, input)
 				ecs[ecsposition].SetRawInput(rawi)
 
 				break
@@ -155,9 +155,9 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 				// we are looking for a command
 				if !commandfound {
 					if char == ' ' {
-						log.LogDebug("ParseInput()", "Final character %c at position %d is end of command", char, pos)
+						log.LogDebugf("ParseInput()", "Final character %c at position %d is end of command", char, pos)
 						cmndname := string(textr[commandfoundat : pos+1])
-						log.LogDebug("ParseInput()", "Parsed command '%s' from '%s'", cmndname, input)
+						log.LogDebugf("ParseInput()", "Parsed command '%s' from '%s'", cmndname, input)
 						ecs[ecsposition].SetCommandName(cmndname)
 						commandfoundat = pos
 						commandfound = true
@@ -170,10 +170,10 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 
 					if char == '"' {
 						if openqoute {
-							log.LogDebug("ParseInput()", "Open qoute found at '%d' this is closing", pos)
+							log.LogDebugf("ParseInput()", "Open qoute found at '%d' this is closing", pos)
 							openqoute = false
 						} else {
-							log.LogDebug("ParseInput()", "Open qoute found at '%d' this is opening", pos)
+							log.LogDebugf("ParseInput()", "Open qoute found at '%d' this is opening", pos)
 							openqoute = true
 						}
 						continue
@@ -185,21 +185,21 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 						if char == ' ' {
 							s := lastargat
 							e := pos
-							log.LogDebug("ParseInput()", "e = %d", e)
+							log.LogDebugf("ParseInput()", "e = %d", e)
 
 							if textr[lastargat] == '"' {
 								s = s + 1
 							}
-							log.LogDebug("ParseInput()", "textr[e] = %s", string(textr[e]))
+							log.LogDebugf("ParseInput()", "textr[e] = %s", string(textr[e]))
 
 							if textr[e-1] == '"' {
-								log.LogDebug("ParseInput()", "minus e = %d", e)
+								log.LogDebugf("ParseInput()", "minus e = %d", e)
 								e = e - 1
 							}
 
-							log.LogDebug("ParseInput()", "e = %d", e)
+							log.LogDebugf("ParseInput()", "e = %d", e)
 							arg := string(textr[s:e])
-							log.LogDebug("ParseInput()", "Found argument terminator: argument read: %s", arg)
+							log.LogDebugf("ParseInput()", "Found argument terminator: argument read: %s", arg)
 							pargs := ecs[ecsposition].GetArgs()
 							pargs = append(pargs, arg)
 							ecs[ecsposition].SetArgs(pargs)
@@ -207,22 +207,22 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 						}
 
 						if char == '|' {
-							log.LogDebug("ParseInput()", "Pipe found at '%d' - new command input created", pos)
-							log.LogDebug("ParseInput()", "Append %s ", ecs[ecsposition].GetCommandName())
+							log.LogDebugf("ParseInput()", "Pipe found at '%d' - new command input created", pos)
+							log.LogDebugf("ParseInput()", "Append %s ", ecs[ecsposition].GetCommandName())
 							ci := CommandInput{}
 							ecs = append(ecs, &ci)
 							ecsposition++
 							commandfound = false
 
 							rawi := string(textr[rawpos : pos+1])
-							log.LogDebug("ParseInput()", "Parsed rawinput '%s' from '%s'", rawi, input)
+							log.LogDebugf("ParseInput()", "Parsed rawinput '%s' from '%s'", rawi, input)
 							ecs[ecsposition].SetRawInput(rawi)
 
 							//this is zero on the first run so we need it to be past the pipe
 							commandfoundat = pos + 1 // pos is the pipe command is at the next item
 							lastargat = pos + 1
 							rawpos = pos + 1
-							log.LogDebug("ParseInput()", "Created new command and incremented to %d ", ecsposition)
+							log.LogDebugf("ParseInput()", "Created new command and incremented to %d ", ecsposition)
 
 						}
 					}
@@ -237,12 +237,12 @@ func (shell *Shell) ParseInput(input string) []sfinterfaces.ICommandInput {
 
 	log.LogDebug("ParseInput()", "following command input parsed and will be executed in order 0> ")
 	for epos, cmdi := range ecs {
-		log.LogDebug("ParseInput()", "%d - Command: %s", epos, cmdi.GetCommandName())
-		log.LogDebug("ParseInput()", "%d - Raw Input: %s", epos, cmdi.GetRawInput())
-		log.LogDebug("ParseInput()", "%d - Input with out name: %s", epos, cmdi.GetInputWithOutCommand())
+		log.LogDebugf("ParseInput()", "%d - Command: %s", epos, cmdi.GetCommandName())
+		log.LogDebugf("ParseInput()", "%d - Raw Input: %s", epos, cmdi.GetRawInput())
+		log.LogDebugf("ParseInput()", "%d - Input with out name: %s", epos, cmdi.GetInputWithOutCommand())
 
 		for apos, arg := range cmdi.GetArgs() {
-			log.LogDebug("ParseInput()", "Args[%d]: %s", apos, arg)
+			log.LogDebugf("ParseInput()", "Args[%d]: %s", apos, arg)
 		}
 	}
 	/*
@@ -689,6 +689,11 @@ func (shell *Shell) RegisterCommandFlag(cmd string, flag sfinterfaces.IFlag) {
 		if strings.ToLower(shell.commands[i].GetName()) == strings.ToLower(cmd) {
 			log.LogDebugf("RegisterCommandFlag()", "'%s' macthed '%s'", shell.commands[i].GetName(), cmd)
 
+			flgsbefore := shell.commands[i].GetFlags().GetFlags()
+			for p, flg := range flgsbefore {
+				log.LogDebugf("RegisterCommandFlag()", "flgsbefore - commands[%d][%d] has '%s' set to type %d", i, p, flg.GetName(), flg.GetFlagType())
+			}
+
 			// get the iflags from the command
 			flgs := shell.commands[i].GetFlags()
 
@@ -697,8 +702,13 @@ func (shell *Shell) RegisterCommandFlag(cmd string, flag sfinterfaces.IFlag) {
 			flags = append(flags, flag)
 			flgs.SetFlags(flags)
 
-			log.LogDebugf("RegisterCommandFlag()", "%d set the flags", i)
+			log.LogDebugf("RegisterCommandFlag()", "commands[%d] had it's flags set", i)
 			shell.commands[i].SetFlags(flgs)
+
+			flgsafter := shell.commands[i].GetFlags().GetFlags()
+			for j, flg := range flgsafter {
+				log.LogDebugf("RegisterCommandFlag()", "flgsafter - commands[%d][%d] has '%s' set to type %d", i, j, flg.GetName(), flg.GetFlagType())
+			}
 			return
 
 		}

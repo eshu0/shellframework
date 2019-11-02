@@ -146,6 +146,13 @@ func (flgs *CommandFlags) Parse() {
 
 	}
 
+	flgset.Parse(command.GetCommandInput().GetArgs())
+	/*
+		flgset.VisitAll(func(f *flag.Flag) {
+			log.LogDebugf("Parse()", "VisitAll - %s %s %s", f.Value, f.Name, f.Usage)
+			flag.Var(f.Value, f.Name, f.Usage)
+		})
+	*/
 	//command.parsedflags = parsedflags
 	log.LogDebug("Parse()", "Set the parsed flags")
 

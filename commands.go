@@ -47,7 +47,7 @@ func (command *Command) Match(incmd sfinterfaces.ICommandInput) bool {
 	log := *shell.GetLog()
 
 	if strings.HasPrefix(incmd.GetLowerCommandName(), strings.ToLower(command.GetName())) {
-		log.LogDebug("Match()", "Command '%s' matched '%s'", command.GetName(), incmd.GetLowerCommandName())
+		log.LogDebugf("Match()", "Command '%s' matched '%s'", command.GetName(), incmd.GetLowerCommandName())
 		return true
 	}
 
@@ -93,9 +93,9 @@ func (command *Command) Process() sfinterfaces.ICommandResult {
 	for _, sflag := range parsedflags {
 		log.LogDebugf("Process()", "Parsed Flag - GetName %s", sflag.GetName())
 		log.LogDebugf("Process()", "Parsed Flag - GetStringValue %s", sflag.GetStringValue())
-		log.LogDebugf("Process()", "Parsed Flag - GetBoolValue %s", sflag.GetBoolValue())
-		log.LogDebugf("Process()", "Parsed Flag - GetIntValue %s", sflag.GetIntValue())
-		log.LogDebugf("Process()", "Parsed Flag - GetFlagType %s", sflag.GetFlagType())
+		log.LogDebugf("Process()", "Parsed Flag - GetBoolValue %t", sflag.GetBoolValue())
+		log.LogDebugf("Process()", "Parsed Flag - GetIntValue %d", sflag.GetIntValue())
+		log.LogDebugf("Process()", "Parsed Flag - GetFlagType %d", sflag.GetFlagType())
 
 	}
 
