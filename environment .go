@@ -71,13 +71,13 @@ func (env *Environment) AddStringValue(key string, value string) {
 	if !exists {
 		var vals []string
 		vals = append(vals, value)
-		env.SetVariable(env.MakeMultiVariable(key, vals))
+		env.Set(env.MakeMultiVariable(key, vals))
 	} else {
 		wc := envvar
 		lc := wc.GetValues()
 		lc = append(lc, value)
 		wc.SetValues(lc)
-		env.SetVariable(wc)
+		env.Set(wc)
 	}
 }
 
@@ -128,7 +128,16 @@ func (env *Environment) MakeSingleVariable(key string, val string) sfinterfaces.
 	return &sev
 }
 
-func (env *Environment) SetVariable(value sfinterfaces.IEnvironmentVariable) {
+func (env *Environment) Clear(key string) {
+	empty := []string{}
+	env.namevalues[key] = env.MakeMultiVariable(key, empty)
+}
+
+func (env *Environment) Delete(key string) {
+	delete(env.namevalues, key)
+}
+
+func (env *Environment) Set(value sfinterfaces.IEnvironmentVariable) {
 	env.namevalues[value.GetName()] = value
 }
 
@@ -205,7 +214,7 @@ func (env *Environment) LoadFile(path string) {
 
 		for key, ev := range f {
 			log.LogDebugf("LoadFile()", "SetVariable %s with %s ", key, strings.Join(ev.GetValues(), ","))
-			env.SetVariable(env.MakeMultiVariable(key, ev.GetValues()))
+			env.Set(env.MakeMultiVariable(key, ev.GetValues()))
 		}
 
 		//env.SetNameValues(f)

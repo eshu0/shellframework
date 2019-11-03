@@ -1,6 +1,7 @@
 package shellframework
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/eshu0/shellframework/interfaces"
@@ -77,25 +78,11 @@ func (command *Command) Process() sfinterfaces.ICommandResult {
 	log.LogDebugf("Process()", "Number of args: %d", len(args))
 
 	// have to derefence due to the interface
-	flgset := flgs.GetFlagSet()
-
-	if flgset != nil {
-		log.LogDebug("Process()", "flagset not nil - Parsing flagset")
-		flgset.Parse(args)
-
-		for _, arg := range flgset.Args() {
-			log.LogDebugf("Process()", "Argument: %s", arg)
-		}
-	} else {
-		log.LogDebugf("Process()", "flagset was nil ")
-	}
 
 	for _, sflag := range parsedflags {
 		log.LogDebugf("Process()", "Parsed Flag - GetName %s", sflag.GetName())
-		log.LogDebugf("Process()", "Parsed Flag - GetStringValue %s", sflag.GetStringValue())
-		log.LogDebugf("Process()", "Parsed Flag - GetBoolValue %t", sflag.GetBoolValue())
-		log.LogDebugf("Process()", "Parsed Flag - GetIntValue %d", sflag.GetIntValue())
 		log.LogDebugf("Process()", "Parsed Flag - GetFlagType %d", sflag.GetFlagType())
+		log.LogDebugf("Process()", "Parsed Flag -  %s", sflag)
 
 	}
 
@@ -191,6 +178,22 @@ type CommandResult struct {
 	sucess    bool
 	err       error
 	result    string
+}
+
+func (cresult *CommandResult) String() string {
+	/*
+		err := ""
+		res := ""
+
+		if cresult.Result() != nil {
+			res = cresult.Result()
+		}
+
+		if cresult.Err() != nil {
+			err = cresult.Err()
+		}
+	*/
+	return fmt.Sprintf("ExitShell: %t - Error: %s - Result: %s", cresult.ExitShell(), cresult.Err(), cresult.Result())
 }
 
 func (cresult *CommandResult) ExitShell() bool {

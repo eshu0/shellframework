@@ -2,12 +2,12 @@ package shellframework
 
 import (
 	"flag"
+	"fmt"
 
 	"github.com/eshu0/shellframework/interfaces"
 )
 
 type CommandFlags struct {
-	flagset     *flag.FlagSet
 	command     sfinterfaces.ICommand
 	parsedflags map[string]sfinterfaces.IFlag
 	flags       []sfinterfaces.IFlag
@@ -26,6 +26,31 @@ type CommandFlag struct {
 	foundbvalue *bool
 	foundsvalue *string
 	foundivalue *int
+}
+
+func (flg *CommandFlag) String() string {
+	switch flg.GetFlagType() {
+	case 1:
+		if flg.GetStringValue() == nil {
+			return ""
+		} else {
+			return *flg.GetStringValue()
+		}
+	case 2:
+		if flg.GetBoolValue() == nil {
+			return ""
+		} else {
+			return fmt.Sprintf("%t", *flg.GetBoolValue())
+		}
+	case 3:
+		if flg.GetIntValue() == nil {
+			return ""
+		} else {
+			return fmt.Sprintf("%d", *flg.GetIntValue())
+		}
+	}
+
+	return "Unknown Type"
 }
 
 func (flg *CommandFlag) GetName() string {
@@ -99,10 +124,6 @@ func (sflgs *CommandFlags) SetFlags(flgs []sfinterfaces.IFlag) {
 	sflgs.flags = flgs
 }
 
-func (flgs *CommandFlags) GetFlagSet() *flag.FlagSet {
-	return flgs.flagset
-}
-
 func (flgs *CommandFlags) SetCommand(cmd sfinterfaces.ICommand) {
 	flgs.command = cmd
 }
@@ -111,21 +132,44 @@ func (flgs *CommandFlags) GetCommand() sfinterfaces.ICommand {
 	return flgs.command
 }
 
-func (flgs *CommandFlags) Parse() {
+func (flgs *CommandFlags) PrintUsage() {
 
 	command := flgs.GetCommand()
 
 	//get she;;
 	shell := command.GetShell()
 	log := *shell.GetLog()
+	// flags
+	flags := flgs.GetFlags()
+	log.LogDebugf("PrintUsage()", " Number of flags %d for %s ", len(flags), command.GetName())
 
-	flgset := flag.NewFlagSet(command.GetName(), flag.ContinueOnError)
+	for _, flg := range flags {
+		shell.Println("----")
+		shell.Printlnf("-%s", flg.GetName())
+		shell.Printlnf("\t Type %d", flg.GetFlagType())
+		shell.Println("\t Usage:")
+		shell.Printlnf("\t\t%s", flg.GetUsage())
+		shell.Println("----")
+
+		log.LogDebugf("PrintUsage()", "%s %s", flg.GetName(), flg)
+
+	}
+
+}
+
+func (flgs *CommandFlags) Parse() {
+
+	command := flgs.GetCommand()
+	shell := command.GetShell()
+	log := *shell.GetLog()
 
 	// flags
 	flags := flgs.GetFlags()
 
 	// parsed flags
 	flgs.parsedflags = make(map[string]sfinterfaces.IFlag)
+
+	flgset := flag.NewFlagSet(command.GetName(), flag.ContinueOnError)
 
 	log.LogDebugf("Parse()", " Number of flags %d for %s ", len(flags), command.GetName())
 
@@ -143,36 +187,34 @@ func (flgs *CommandFlags) Parse() {
 		} else {
 			log.LogDebugf("Parse()", "%s was not nil so it will not be added", flg.GetName())
 		}
-
 	}
 
-	flgset.Parse(command.GetCommandInput().GetArgs())
+	ci := command.GetCommandInput()
+
+	if ci != nil {
+		args := ci.GetArgs()
+		if args != nil {
+			flgset.Parse(args)
+		} else {
+			log.LogDebug("Parse()", "args was nil ")
+		}
+	} else {
+		log.LogDebug("Parse()", "ci was nil ")
+	}
+
 	/*
 		flgset.VisitAll(func(f *flag.Flag) {
 			log.LogDebugf("Parse()", "VisitAll - %s %s %s", f.Value, f.Name, f.Usage)
 			flag.Var(f.Value, f.Name, f.Usage)
 		})
 	*/
-	//command.parsedflags = parsedflags
+
 	log.LogDebug("Parse()", "Set the parsed flags")
 
-	//if command.Shell.env_trace >= 0 {
-
 	for _, sflag := range flgs.parsedflags {
-		// have to derefence due to the interface
-		//sflag := *p
-		// what type are we dealing with
 		log.LogDebugf("Parse()", "flag.GetName: %s", sflag.GetName())
 		log.LogDebugf("Parse()", "flag.GetFlagType: %d", sflag.GetFlagType())
-
-		switch sflag.GetFlagType() {
-		case 1:
-			log.LogDebugf("Parse()", "flag.String: %s", sflag.GetStringValue())
-		case 2:
-			log.LogDebugf("Parse()", "flag.Boolean: %t", sflag.GetBoolValue())
-		case 3:
-			log.LogDebugf("Parse()", "flag.Integer: %d", sflag.GetIntValue())
-		}
+		log.LogDebugf("Parse()", "flag %s", sflag)
 
 	}
 
