@@ -616,7 +616,7 @@ func (shell *Shell) NewCommand(name string, description string, operator func(co
 	flgs.SetCommand(sc)
 	flgs.SetFlags(flags)
 
-	sc.SetFlags(flgs)
+	sc.SetCommandFlags(flgs)
 
 	//sc.flags = flags
 	return sc
@@ -689,13 +689,13 @@ func (shell *Shell) RegisterCommandFlag(cmd string, flag sfinterfaces.IFlag) {
 		if strings.ToLower(shell.commands[i].GetName()) == strings.ToLower(cmd) {
 			log.LogDebugf("RegisterCommandFlag()", "'%s' macthed '%s'", shell.commands[i].GetName(), cmd)
 
-			flgsbefore := shell.commands[i].GetFlags().GetFlags()
+			flgsbefore := shell.commands[i].GetCommandFlags().GetFlags()
 			for p, flg := range flgsbefore {
 				log.LogDebugf("RegisterCommandFlag()", "flgsbefore - commands[%d][%d] has '%s' set to type %d", i, p, flg.GetName(), flg.GetFlagType())
 			}
 
 			// get the iflags from the command
-			flgs := shell.commands[i].GetFlags()
+			flgs := shell.commands[i].GetCommandFlags()
 
 			// now get the underlying array list
 			flags := flgs.GetFlags()
@@ -703,9 +703,9 @@ func (shell *Shell) RegisterCommandFlag(cmd string, flag sfinterfaces.IFlag) {
 			flgs.SetFlags(flags)
 
 			log.LogDebugf("RegisterCommandFlag()", "commands[%d] had it's flags set", i)
-			shell.commands[i].SetFlags(flgs)
+			shell.commands[i].SetCommandFlags(flgs)
 
-			flgsafter := shell.commands[i].GetFlags().GetFlags()
+			flgsafter := shell.commands[i].GetCommandFlags().GetFlags()
 			for j, flg := range flgsafter {
 				log.LogDebugf("RegisterCommandFlag()", "flgsafter - commands[%d][%d] has '%s' set to type %d", i, j, flg.GetName(), flg.GetFlagType())
 			}

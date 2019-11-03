@@ -68,7 +68,7 @@ func (command *Command) Process() sfinterfaces.ICommandResult {
 	args := ci.GetArgs()
 	log.LogDebugf("Process()", "Number of args: %d", len(args))
 
-	flgs := command.GetFlags()
+	flgs := command.GetCommandFlags()
 
 	log.LogDebug("Process()", "Parsing the flags")
 	flgs.Parse()
@@ -102,11 +102,11 @@ func (command *Command) Register(shell sfinterfaces.IShell) {
 
 }
 
-func (command *Command) GetFlags() sfinterfaces.IFlags {
+func (command *Command) GetCommandFlags() sfinterfaces.IFlags {
 	return command.flags
 }
 
-func (command *Command) SetFlags(flgs sfinterfaces.IFlags) {
+func (command *Command) SetCommandFlags(flgs sfinterfaces.IFlags) {
 	command.flags = flgs
 }
 

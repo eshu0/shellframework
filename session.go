@@ -10,8 +10,9 @@ import (
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 type Session struct {
-	id string
+	id          string
 	interactive bool
+	shell       sfinterfaces.IShell
 }
 
 // this is a very simple random string
@@ -36,17 +37,24 @@ func NewInteractiveSession() sfinterfaces.ISession {
 	return ss
 }
 
+func (command *Session) SetShell(shell sfinterfaces.IShell) {
+	command.shell = shell
+}
+
+func (command *Session) GetShell() sfinterfaces.IShell {
+	return command.shell
+}
 
 // returns the string ID for the session
-func (ss *Session) ID() string {
+func (ss Session) ID() string {
 	return ss.id
 }
 
 // Session is Interactive?
-func (session Session)  GetInteractive() bool {
- return session.interactive
+func (session Session) GetInteractive() bool {
+	return session.interactive
 }
 
-func (session Session)  SetInteractive(interactive bool) {
+func (session Session) SetInteractive(interactive bool) {
 	session.interactive = interactive
 }

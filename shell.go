@@ -19,21 +19,22 @@ type Shell struct {
 	err *os.File
 }
 
-func NewShell(session sfinterfaces.ISession, In *os.File, Out *os.File, Err *os.File, logfile sfinterfaces.IShellLogger) *Shell {
+func NewShell(session sfinterfaces.ISession, In *os.File, Out *os.File, Err *os.File, logi sfinterfaces.IShellLogger) *Shell {
 
 	shell := &Shell{}
 
 	env := NewEnvironment(shell)
-	shell.environment = &env
+	shell.SetEnvironment(env)
+	shell.SetSession(session)
 
-	shell.commands = []sfinterfaces.ICommand{}
 	shell.version = sfinterfaces.Version
-	shell.session = &session
 
 	shell.in = In
 	shell.out = Out
 	shell.err = Err
-	shell.log = &logfile
+	shell.log = &logi
+
+	shell.commands = []sfinterfaces.ICommand{}
 
 	// Add the default commands
 	mcmd := dcmds.ManCommand{}
@@ -59,12 +60,24 @@ func NewShell(session sfinterfaces.ISession, In *os.File, Out *os.File, Err *os.
 
 // Get Methods
 
+func (shell *Shell) SetCommands(cmds []sfinterfaces.ICommand) {
+	shell.commands = cmds
+}
+
 func (shell *Shell) GetCommands() []sfinterfaces.ICommand {
 	return shell.commands
 }
 
+func (shell *Shell) SetEnvironment(env sfinterfaces.IEnvironment) {
+	shell.environment = &env
+}
+
 func (shell *Shell) GetEnvironment() sfinterfaces.IEnvironment {
 	return *shell.environment
+}
+
+func (shell *Shell) SetSession(sess sfinterfaces.ISession) {
+	shell.session = &sess
 }
 
 func (shell *Shell) GetSession() sfinterfaces.ISession {
