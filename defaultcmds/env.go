@@ -34,43 +34,17 @@ func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 	log := *shell.GetLog()
 
 	fg := command.GetFlags()
+	ci := command.GetCommandInput()
+	args := ci.GetArgs()
 
 	pflags := fg.Parsedflags()
 	env := shell.GetEnvironment()
 
-	/*
-		for _, sflag := range pflags {
-			// have to derefence due to the interface
-			//sflag := *p
-			shell.LogPrintlnf("env(): Argument: %s", sflag.GetName())
-			flgset := sflag.GetFlagSet()
-
-			if flgset != nil {
-				shell.LogPrintln("env(): flagset not nil")
-				for _, arg := range flgset.Args() {
-					shell.LogPrintlnf("env(): Argument: %s", arg)
-				}
-			} else {
-				shell.LogPrintln("env(): flagset was nil ")
-			}
-		}
-	*/
-	// map to [string]*IEnvironmentVariable
 	kflag := pflags["key"]
 	vflag := pflags["value"]
 
-	//if kflag != nil && vflag != nil {
-
-	//shell.LogPrintln("env() kflag and vflag is not nil")
-
-	//keyflag := *kflag
-	//valueflag := *vflag
-
 	log.LogDebugf("env()", "key GetName = %s", kflag.GetName())
 	log.LogDebugf("env()", "value GetName = %s", vflag.GetName())
-
-	//if keyflag != nil && valueflag != nil {
-	//shell.LogPrintln("env() keyflag and valueflag is not nil")
 
 	kstr := kflag.GetStringValue()
 	vstr := vflag.GetStringValue()
@@ -78,31 +52,39 @@ func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 	log.LogDebugf("env()", "kstr = %s", *kstr)
 	log.LogDebugf("env()", "vstr = %s", *vstr)
 
-	//if len(arguements.Args) >= 0 {
-	//if keyflag != nil && kstr != nil && *kstr != "" && valueflag != nil && vstr != nil && *vstr != "" {
-	if *kstr != kflag.GetDefaultStringValue() && *vstr != vflag.GetDefaultStringValue() {
+	if *kstr != kflag.GetDefaultStringValue() {
 
-		//if arguements.Args[0] == "set" {
-		shell.Println("--")
-		shell.Printlnf("Setting %s to %s", *kstr, *vstr)
-		shell.Println("--")
-		env.SetVariable(env.MakeSingleVariable(*kstr, *vstr))
-		//}
+		if *vstr != vflag.GetDefaultStringValue() && args[2] == "set" {
+			shell.Println("--")
+			shell.Printlnf("Setting %s to %s", *kstr, *vstr)
+			shell.Println("--")
+			env.Set(env.MakeSingleVariable(*kstr, *vstr))
+		} else {
+			if args[2] == "clear" {
+				shell.Println("--")
+				shell.Printlnf("Clearing %s", *kstr)
+				shell.Println("--")
+				env.Clear(*kstr)
+			}
+
+			if args[2] == "delete" {
+				shell.Println("--")
+				shell.Printlnf("Deleting %s", *kstr)
+				shell.Println("--")
+				env.Delete(*kstr)
+			}
+		}
+
 	} else {
 		log.LogDebugf("env()", "skipping: kstr = %s matched default %s", *kstr, kflag.GetDefaultStringValue())
 		log.LogDebugf("env()", "skipping: vstr = %s macthed default %s", *vstr, vflag.GetDefaultStringValue())
 	}
 
-	//}
-	//}
-	//}
-
 	listflag := pflags["list"]
-	//lbool := listflag.GetBoolValue()
+
 	if listflag != nil && listflag.GetBoolValue() != nil && *listflag.GetBoolValue() {
 		log.LogDebugf("env()", "listflag is not nil")
 
-		//	if listflag != nil && lbool != nil && *lbool == true {
 		namevalues := env.GetNameValues()
 		for k, _ := range namevalues {
 			envp := namevalues[k]

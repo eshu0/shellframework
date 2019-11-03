@@ -30,37 +30,11 @@ func Man(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 
 				shell.Printlnf("Command Name: %s", command.GetName())
 				shell.Printlnf("Description: %s", command.GetDescription())
-				shell.Println("Flags:")
-
 				flgs := command.GetFlags()
-				flgs.Parse()
 
-				parsedflags := flgs.Parsedflags()
+				shell.Println("Flags:")
+				flgs.PrintUsage()
 
-				if args != nil && len(args) > 0 && parsedflags != nil {
-					/*
-						for _, sflag := range parsedflags {
-							// flag set per flag?
-							// this needs to be reviewed....
-
-							flgset := sflag.GetFlagSet()
-							//flgset.PrintDefaults()
-							if flgset != nil {
-								shell.LogPrintln("man(): flagset not nil - Parsing flagset")
-
-								for _, arg := range flgset.Args() {
-									shell.Println(arg)
-									shell.LogPrintlnf("man(): Argument: %s", arg)
-								}
-							} else {
-								shell.LogPrintln("man(): flagset was nil ")
-							}
-						}
-					*/
-
-				} else {
-					log.LogDebug("man()", "Not parsing flagset")
-				}
 			}
 		}
 	} else {
