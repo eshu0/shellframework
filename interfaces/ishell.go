@@ -11,10 +11,16 @@ const Version = "0.1"
 // i am human so most likely i have forgetten something
 type IShell interface {
 
-	// getters
+	// getters and setters
 	GetCommands() []ICommand
-	GetEnvironment() IEnvironment
+	SetCommands(cmds []ICommand)
+
 	GetSession() ISession
+	SetSession(session ISession)
+
+	GetEnvironment() IEnvironment
+	SetEnvironment(env IEnvironment)
+
 	GetVersion() string
 
 	// logging

@@ -9,4 +9,7 @@ type ISession interface {
 	GetInteractive() bool
 	SetInteractive(interactive bool)
 
+	//Get and Set for the shell that this command belong to
+	SetShell(shell IShell)
+	GetShell() IShell
 }

@@ -16,10 +16,6 @@ type ICommand interface {
 	SetCommandInput(input ICommandInput)
 	GetCommandInput() ICommandInput
 
-	// The command arguments that are required for parsing for this command
-	//SetArguments(args ICommandArguments)
-	//GetArguments() ICommandArguments
-
 	// Match for matching the text input
 	// it will be lower so that it is case insensitive
 	Match(incmd ICommandInput) bool
@@ -31,8 +27,8 @@ type ICommand interface {
 	Process() ICommandResult
 
 	//Get and Set IFlags
-	SetFlags(flgs IFlags)
-	GetFlags() IFlags
+	SetCommandFlags(flgs IFlags)
+	GetCommandFlags() IFlags
 
 	// helper methods
 	NewSuccessCommandResult(msg string) ICommandResult
