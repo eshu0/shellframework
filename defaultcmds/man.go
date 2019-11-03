@@ -30,7 +30,7 @@ func Man(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 
 				shell.Printlnf("Command Name: %s", command.GetName())
 				shell.Printlnf("Description: %s", command.GetDescription())
-				flgs := command.GetFlags()
+				flgs := command.GetCommandFlags()
 
 				shell.Println("Flags:")
 				flgs.PrintUsage()

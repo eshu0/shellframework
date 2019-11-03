@@ -33,7 +33,7 @@ func Env(command sfinterfaces.ICommand) sfinterfaces.ICommandResult {
 	shell := command.GetShell()
 	log := *shell.GetLog()
 
-	fg := command.GetFlags()
+	fg := command.GetCommandFlags()
 	ci := command.GetCommandInput()
 	args := ci.GetArgs()
 
