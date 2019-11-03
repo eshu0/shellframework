@@ -22,7 +22,10 @@ type IEnvironment interface {
 	SaveToFile(path string)
 	LoadFile(path string)
 
-	SetVariable(value IEnvironmentVariable)
+	Set(value IEnvironmentVariable)
+	Clear(key string)
+	Delete(key string)
+
 	GetVariable(key string) (IEnvironmentVariable, bool)
 
 	AddStringValue(key string, value string)

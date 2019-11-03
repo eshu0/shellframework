@@ -6,7 +6,7 @@ type IFlags interface {
 
 	// what was read from the shell
 	//SetFlagValue(toread *flag.FlagSet, flg IFlag)
-	GetFlagSet() *flag.FlagSet
+	//GetFlagSet() *flag.FlagSet
 
 	//Get and Set IExecution
 	SetCommand(input ICommand)
@@ -19,6 +19,7 @@ type IFlags interface {
 	SetFlags(flgs []IFlag)
 
 	Parse()
+	PrintUsage()
 }
 
 // I'd like to replace this with the flags
