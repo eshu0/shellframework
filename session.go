@@ -38,24 +38,24 @@ func NewInteractiveSession() sfinterfaces.ISession {
 	return ss
 }
 
-func (command *Session) SetShell(shell sfinterfaces.IShell) {
-	command.shell = shell
+func (session *Session) SetShell(shell sfinterfaces.IShell) {
+	session.shell = shell
 }
 
-func (command *Session) GetShell() sfinterfaces.IShell {
-	return command.shell
+func (session *Session) GetShell() sfinterfaces.IShell {
+	return session.shell
 }
 
 // returns the string ID for the session
-func (ss Session) ID() string {
-	return ss.id
+func (session *Session) ID() string {
+	return session.id
 }
 
 // Session is Interactive?
-func (session Session) GetInteractive() bool {
+func (session *Session) GetInteractive() bool {
 	return session.interactive
 }
 
-func (session Session) SetInteractive(interactive bool) {
+func (session *Session) SetInteractive(interactive bool) {
 	session.interactive = interactive
 }

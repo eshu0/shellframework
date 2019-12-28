@@ -43,6 +43,7 @@ func (shell *Shell) PrintDetails() {
 	shell.Println("*****************************")
 	shell.Printlnf("Framework Version: %s", shell.GetVersion())
 	shell.Printlnf("Session: %s", shell.GetSession().ID())
+	shell.Printlnf("Iteractive: %t", shell.GetSession().GetInteractive())
 	shell.Println("*****************************")
 	shell.Println("")
 }
@@ -312,17 +313,16 @@ func (shell *Shell) Run() {
 		env.LoadFile(sfinterfaces.EnvironmentFilename)
 	}
 
-	shell.PrintDetails()
 	log := *shell.GetLog()
 	session := shell.GetSession()
-
+	
 	if session.GetInteractive() {
+		shell.PrintDetails()
 		log.LogDebug("Run()", "Interactive Session")
 		shell.InteractiveSession(env, log)
 
 	} else {
 		log.LogDebug("Run()", "Non-Interactive Session")
-
 		shell.NonInteractiveSession(env, log)
 	}
 
