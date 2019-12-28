@@ -14,6 +14,8 @@ type Session struct {
 	id          string
 	interactive bool
 	shell       sfinterfaces.IShell
+	idmethod func() string
+	interactiveMethod func() bool
 }
 
 // this is a very simple random string
@@ -46,16 +48,19 @@ func (session *Session) GetShell() sfinterfaces.IShell {
 	return session.shell
 }
 
-// returns the string ID for the session
-func (session *Session) ID() string {
-	return session.id
+func (session *Session) SetInteractiveMethod(interactiveMethod  func() bool) {
+	session.interactiveMethod = interactiveMethod
 }
 
-// Session is Interactive?
-func (session *Session) GetInteractive() bool {
-	return session.interactive
+func (session *Session) GetInteractiveMethod()  func() bool {
+	return session.interactiveMethod
 }
 
-func (session *Session) SetInteractive(interactive bool) {
-	session.interactive = interactive
+
+func (session *Session) SetIDMethod(idmethod  func() string) {
+	session.idmethod = idmethod
+}
+
+func (session *Session) GetIDMethod()  func() string {
+	return session.idmethod
 }

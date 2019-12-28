@@ -316,7 +316,10 @@ func (shell *Shell) Run() {
 	log := *shell.GetLog()
 	session := shell.GetSession()
 
-	if session.GetInteractive() {
+	var interactiveMethod func() bool
+
+	interactiveMethod = session.GetInteractiveMethod()
+	if interactiveMethod() {
 		shell.PrintDetails()
 		log.LogDebug("Run()", "Interactive Session")
 		shell.InteractiveSession(env, log)
