@@ -3,8 +3,9 @@ package sfinterfaces
 // the session for the Shell
 type ISession interface {
 	//The Identifying String
-	SetIDMethod(idmethod func(ss ISession) string)
-	GetIDMethod() func(ss ISession) string
+	ID() string
+	SetID(id string)
+	SetBuildIDMethod(idmethod func(ss ISession))
 
 	// Session is Interactive?
 	SetInteractiveMethod(interactivemethod func(ss ISession) bool)

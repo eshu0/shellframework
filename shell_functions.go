@@ -43,11 +43,9 @@ func (shell *Shell) PrintDetails() {
 	shell.Println("*****************************")
 	shell.Printlnf("Framework Version: %s", shell.GetVersion())
 	session := shell.GetSession()
-
-	idmeth := session.GetIDMethod()
 	imeth := session.GetInteractiveMethod()
 
-	shell.Printlnf("Session: %s", idmeth(session))
+	shell.Printlnf("Session: %s",  session.ID())
 	shell.Printlnf("Iteractive: %t", imeth(session))
 	shell.Println("*****************************")
 	shell.Println("")
@@ -56,8 +54,7 @@ func (shell *Shell) PrintDetails() {
 func (shell *Shell) PrintInputMessage() {
 	sess := shell.GetSession()
 	if !PointerInvalid(sess) {
-		idmeth := sess.GetIDMethod()
-		shell.Printf("[%s]: ", idmeth(sess))
+		shell.Printf("[%s]: ",  sess.ID())
 	} else {
 		shell.Print("[Invalid session]: ")
 	}

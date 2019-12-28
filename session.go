@@ -18,16 +18,15 @@ type Session struct {
 	interactiveMethod func(ss sfinterfaces.ISession) bool
 }
 
-func DefaultIDMethod(ss *Session) string {
+func DefaultBuildIDMethod(ss sfinterfaces.ISession) {
 	rand.Seed(time.Now().UnixNano())
 	b := make([]rune, 10)
 	for i := range b {
 		b[i] = letterRunes[rand.Intn(len(letterRunes))]
 	}
-	ss.id = string(b)
-	return ss.id
-}
 
+	ss.SetID(string(b))
+}
 
 func DefaultNonInteractiveMethod(ss sfinterfaces.ISession) bool {
 //	ss.interactive = false
@@ -78,11 +77,13 @@ func (session *Session) GetInteractiveMethod() func(ss sfinterfaces.ISession) bo
 	return session.interactiveMethod
 }
 
-
-func (session *Session) SetIDMethod(idmethod  func(ss sfinterfaces.ISession) string) {
-	session.idmethod = idmethod
+func (session *Session) SetBuildIDMethod(builidmethod  func(ss sfinterfaces.ISession)) {
+	session.builidmethod = builidmethod
 }
 
-func (session *Session) GetIDMethod()  func(ss sfinterfaces.ISession) string {
-	return session.idmethod
+func (session *Session) ID() string {
+	return session.id
+}
+func (session *Session) SetID(id string) string {
+	session.id = id
 }

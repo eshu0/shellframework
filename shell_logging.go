@@ -89,9 +89,8 @@ func (ssl *ShellLogger) OpenSessionFileLog(session sfinterfaces.ISession) *os.Fi
 	}
 
 	//logger :=
-	logger := kitlog.NewLogfmtLogger(f)
-	idmeth := session.GetIDMethod()                                               //(f, session.ID()+" ", log.LstdFlags)
-	logger = kitlog.With(logger, "session_id", idmeth(session), "ts", kitlog.DefaultTimestampUTC) //, "caller", kitlog.DefaultCaller)
+	logger := kitlog.NewLogfmtLogger(f)                                            //(f, session.ID()+" ", log.LstdFlags)
+	logger = kitlog.With(logger, "session_id", session.ID(), "ts", kitlog.DefaultTimestampUTC) //, "caller", kitlog.DefaultCaller)
 
 	// check log is valid
 	if logger == nil {
