@@ -470,11 +470,10 @@ func (shell *Shell) InteractiveSession(env sfinterfaces.IEnvironment, log sfinte
 				shell.Println("Getting Keyboard key caused an error")
 				log.LogDebugf("InteractiveSession()", "GetSingleKey: %s", err.Error())
 				return
-			} else{
+			} else {
 				log.LogDebugf("InteractiveSession()", "key: %s char %s", key, char)
 
-				if key == keyboard.KeyArrowUp
-				{
+				if key == keyboard.KeyArrowUp {
 	 			if !PointerInvalid(env) {
 	 				envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
 	 				if exists {
