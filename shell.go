@@ -20,6 +20,34 @@ type Shell struct {
 	err *os.File
 }
 
+func NewShellFromFile(session sfinterfaces.ISession,scriptinfilepath string, Out *os.File, Err *os.File, logi sfinterfaces.IShellLogger) *Shell {
+
+	var input *os.File
+
+	// script file been provided as input to the cli?
+	if(scriptinfilepath != "") {
+
+		// open the file if we cannot then crash out
+		inf, err := os.Open(scriptinfilepath)
+		if err != nil {
+			// should write an error here
+			return nil
+		}
+
+		// replace the Stdin with the file we have read
+		input = inf
+
+		// we don't want an interactive session as we are running a script
+		session.SetInteractive(false)
+	} else {
+		// should write an error here
+		return nil
+	}
+
+	shell := NewShell(session,input, Out, Err, logi)
+	return shell
+}
+
 func NewShell(session sfinterfaces.ISession, In *os.File, Out *os.File, Err *os.File, logi sfinterfaces.IShellLogger) *Shell {
 
 	shell := &Shell{}
