@@ -465,13 +465,13 @@ func (shell *Shell) InteractiveSession(env sfinterfaces.IEnvironment, log sfinte
 		defer keyboard.Close()
 		text := ""
 		for {
-			char, key, err := keyboard.GetSingleKey() // keyboard.GetKey()
+			char, key, err := keyboard.GetKey() //GetSingleKey()
 			if err != nil {
 				shell.Println("Getting Keyboard key caused an error")
 				log.LogDebugf("InteractiveSession()", "GetSingleKey: %s", err.Error())
 				return
 			} else {
-				log.LogDebugf("InteractiveSession()", "key: %s char %s", key, char)
+				log.LogDebugf("InteractiveSession()", "key: %d char %s", key, char)
 
 				if key == keyboard.KeyArrowUp {
 	 			if !PointerInvalid(env) {
