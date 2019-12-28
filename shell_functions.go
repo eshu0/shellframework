@@ -315,7 +315,7 @@ func (shell *Shell) Run() {
 
 	log := *shell.GetLog()
 	session := shell.GetSession()
-	
+
 	if session.GetInteractive() {
 		shell.PrintDetails()
 		log.LogDebug("Run()", "Interactive Session")
@@ -458,60 +458,70 @@ func (shell *Shell) InteractiveSession(env sfinterfaces.IEnvironment, log sfinte
 
 		kerr := keyboard.Open()
 		if kerr != nil {
-			panic(kerr)
+			shell.Println("Opening Keyboard caused an error")
+			log.LogDebugf("InteractiveSession()", "Opening Keyboard: %s", kerr.Error())
+			return
 		}
 		defer keyboard.Close()
 		text := ""
 		for {
 			char, key, err := keyboard.GetSingleKey() // keyboard.GetKey()
 			if err != nil {
-				panic(err)
-			} else if key == keyboard.KeyArrowUp {
-				if !PointerInvalid(env) {
-					envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
-					if exists {
-						wc := envvar
-						lc := wc.GetValues()
-						if lastcommandpos >= len(lc)-1 {
-							shell.PrintInputMessage()
-							shell.Printf("%s", lc[lastcommandpos])
-							lastcommandpos = 0
-						} else {
-							shell.PrintInputMessage()
-							shell.Printf(" %s", lc[lastcommandpos])
-							lastcommandpos = lastcommandpos + 1
-						}
-					}
-				}
-			} else if key == keyboard.KeyArrowDown {
-				if !PointerInvalid(env) {
-					envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
-					if exists {
-						wc := envvar
-						lc := wc.GetValues()
-						if lastcommandpos >= len(lc)-1 {
-							shell.PrintInputMessage()
-							shell.Printf("%s", lc[lastcommandpos])
-							lastcommandpos = 0
-						} else {
-							shell.PrintInputMessage()
-							shell.Printf("%s", lc[lastcommandpos])
-							lastcommandpos = lastcommandpos - 1
-						}
-					}
-
-				}
-			} else if key == keyboard.KeyEsc {
-				shell.Println("Exiting")
-				log.LogDebug("InteractiveSession()", "Exiting")
+				shell.Println("Getting Keyboard key caused an error")
+				log.LogDebugf("InteractiveSession()", "GetSingleKey: %s", err.Error())
 				return
-			} else if key == keyboard.KeyEnter {
-				shell.Print("\n")
-				break
-			} else {
-				shell.Print(string(char))
-				text = text + string(char)
+			} else{
+				log.LogDebugf("InteractiveSession()", "key: %s char %s", key, char)
+
+				if key == keyboard.KeyArrowUp
+				{
+	 			if !PointerInvalid(env) {
+	 				envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
+	 				if exists {
+	 					wc := envvar
+	 					lc := wc.GetValues()
+	 					if lastcommandpos >= len(lc)-1 {
+	 						shell.PrintInputMessage()
+	 						shell.Printf("%s", lc[lastcommandpos])
+	 						lastcommandpos = 0
+	 					} else {
+	 						shell.PrintInputMessage()
+	 						shell.Printf(" %s", lc[lastcommandpos])
+	 						lastcommandpos = lastcommandpos + 1
+	 					}
+	 				}
+	 			}
+	 		} else if key == keyboard.KeyArrowDown {
+	 			if !PointerInvalid(env) {
+	 				envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
+	 				if exists {
+	 					wc := envvar
+	 					lc := wc.GetValues()
+	 					if lastcommandpos >= len(lc)-1 {
+	 						shell.PrintInputMessage()
+	 						shell.Printf("%s", lc[lastcommandpos])
+	 						lastcommandpos = 0
+	 					} else {
+	 						shell.PrintInputMessage()
+	 						shell.Printf("%s", lc[lastcommandpos])
+	 						lastcommandpos = lastcommandpos - 1
+	 					}
+	 				}
+
+	 			}
+	 		} else if key == keyboard.KeyEsc {
+	 			shell.Println("Exiting")
+	 			log.LogDebug("InteractiveSession()", "Exiting")
+	 			return
+	 		} else if key == keyboard.KeyEnter {
+	 			shell.Print("\n")
+	 			break
+	 		} else {
+	 			shell.Print(string(char))
+	 			text = text + string(char)
+	 		}
 			}
+
 
 		}
 
