@@ -48,6 +48,7 @@ func NewSession(buildidmethod func(ss sfinterfaces.ISession),	interactiveMethod 
 	//ss.interactive = false
 	ss.SetInteractiveMethod(interactiveMethod)
 	ss.SetBuildIDMethod(buildidmethod)
+	buildidmethod(ss)
 	return ss
 }
 
