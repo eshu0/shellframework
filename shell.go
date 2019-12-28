@@ -38,7 +38,7 @@ func NewShellFromFile(session sfinterfaces.ISession,scriptinfilepath string, Out
 		input = inf
 
 		// we don't want an interactive session as we are running a script
-		session.SetInteractiveMethod(func(ss *sfinterfaces.ISession){ return false })
+		session.SetInteractiveMethod(DefaultNonInteractiveSession)
 	} else {
 		// should write an error here
 		return nil

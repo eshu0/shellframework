@@ -14,8 +14,8 @@ type Session struct {
 	id          string
 	interactive bool
 	shell       sfinterfaces.IShell
-	idmethod func(ss *sfinterfaces.ISession) string
-	interactiveMethod func(ss *sfinterfaces.ISession) bool
+	idmethod func(ss sfinterfaces.ISession) string
+	interactiveMethod func(ss sfinterfaces.ISession) bool
 }
 
 func DefaultIDMethod(ss *Session) string {
@@ -28,14 +28,21 @@ func DefaultIDMethod(ss *Session) string {
 	return ss.id
 }
 
-func DefaultInteractive(ss *Session) bool {
+
+func DefaultNonInteractiveMethod(ss Session) bool {
+	ss.interactive = false
+	return ss.interactive
+}
+
+func DefaultInteractiveMethod(ss Session) bool {
+	ss.interactive = true
 	return ss.interactive
 }
 
 // this is a very simple random string
 // this is just to uniquely identify each session
 // this is meant to be over written if needs be
-func NewSession(idmethod func(ss *sfinterfaces.ISession) string,	interactiveMethod func(ss *sfinterfaces.ISession) bool ) sfinterfaces.ISession {
+func NewSession(idmethod func(ss sfinterfaces.ISession) string,	interactiveMethod func(ss sfinterfaces.ISession) bool ) sfinterfaces.ISession {
 	ss := new(Session)
 	ss.interactive = false
 	ss.SetInteractiveMethod(interactiveMethod)
@@ -43,9 +50,13 @@ func NewSession(idmethod func(ss *sfinterfaces.ISession) string,	interactiveMeth
 	return ss
 }
 
-func NewInteractiveSession() sfinterfaces.ISession {
-	ss := NewSession()
-	ss.interactive = true
+func NewDefaultInteractiveSession(idmethod func(ss sfinterfaces.ISession) string) sfinterfaces.ISession {
+	ss := NewSession(idmethod, DefaultInteractiveMethod)
+	return ss
+}
+
+func NewDefaultNonInteractiveSession(idmethod func(ss sfinterfaces.ISession) string) sfinterfaces.ISession {
+	ss := NewSession(idmethod, DefaultNonInteractiveMethod)
 	return ss
 }
 
@@ -57,19 +68,19 @@ func (session *Session) GetShell() sfinterfaces.IShell {
 	return session.shell
 }
 
-func (session *Session) SetInteractiveMethod(interactiveMethod  func(ss *sfinterfaces.ISession) bool) {
+func (session *Session) SetInteractiveMethod(interactiveMethod  func(ss sfinterfaces.ISession) bool) {
 	session.interactiveMethod = interactiveMethod
 }
 
-func (session *Session) GetInteractiveMethod() func(ss *sfinterfaces.ISession) bool {
+func (session *Session) GetInteractiveMethod() func(ss sfinterfaces.ISession) bool {
 	return session.interactiveMethod
 }
 
 
-func (session *Session) SetIDMethod(idmethod  func(ss *sfinterfaces.ISession) string) {
+func (session *Session) SetIDMethod(idmethod  func(ss sfinterfaces.ISession) string) {
 	session.idmethod = idmethod
 }
 
-func (session *Session) GetIDMethod()  func(ss *sfinterfaces.ISession) string {
+func (session *Session) GetIDMethod()  func(ss sfinterfaces.ISession) string {
 	return session.idmethod
 }
