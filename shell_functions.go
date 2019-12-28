@@ -44,7 +44,6 @@ func (shell *Shell) PrintDetails() {
 	shell.Printlnf("Framework Version: %s", shell.GetVersion())
 	session := shell.GetSession()
 	imeth := session.GetInteractiveMethod()
-
 	shell.Printlnf("Session: %s",  session.ID())
 	shell.Printlnf("Iteractive: %t", imeth(session))
 	shell.Println("*****************************")
@@ -341,6 +340,8 @@ func (shell *Shell) NonInteractiveSession(env sfinterfaces.IEnvironment, log sfi
 
 		// this keeps updating so let's keep it syncd
 		env = shell.GetEnvironment()
+		session := shell.GetSession()
+	  session.CallBuildIDMethod(shell)
 
 		// pointer is valid?
 		if !PointerInvalid(reader) {
@@ -458,7 +459,8 @@ func (shell *Shell) InteractiveSession(env sfinterfaces.IEnvironment, log sfinte
 
 		// this keeps updating so let's keep it syncd
 		env = shell.GetEnvironment()
-
+		session := shell.GetSession()
+	  session.CallBuildIDMethod(shell)
 		// print the input message
 		shell.PrintInputMessage()
 

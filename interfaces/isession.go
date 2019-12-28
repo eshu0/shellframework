@@ -5,7 +5,8 @@ type ISession interface {
 	//The Identifying String
 	ID() string
 	SetID(id string)
-	SetBuildIDMethod(idmethod func(ss ISession))
+	SetBuildIDMethod(idmethod func(ss ISession, shell IShell))
+ 	CallBuildIDMethod(shell sfinterfaces.IShell) 
 
 	// Session is Interactive?
 	SetInteractiveMethod(interactivemethod func(ss ISession) bool)
