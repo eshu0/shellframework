@@ -14,29 +14,38 @@ type Session struct {
 	id          string
 	interactive bool
 	shell       sfinterfaces.IShell
-	idmethod func() string
-	interactiveMethod func() bool
+	idmethod func(ss *sfinterfaces.ISession) string
+	interactiveMethod func(ss *sfinterfaces.ISession) bool
 }
 
-// this is a very simple random string
-// this is just to uniquely identify each session
-// this is meant to be over written if needs be
-func NewSession() sfinterfaces.ISession {
-	ss := new(Session)
-
+func DefaultIDMethod(ss *Session) string {
 	rand.Seed(time.Now().UnixNano())
 	b := make([]rune, 10)
 	for i := range b {
 		b[i] = letterRunes[rand.Intn(len(letterRunes))]
 	}
 	ss.id = string(b)
-	ss.SetInteractive(false)
+	return ss.id
+}
+
+func DefaultInteractive(ss *Session) bool {
+	return ss.interactive
+}
+
+// this is a very simple random string
+// this is just to uniquely identify each session
+// this is meant to be over written if needs be
+func NewSession(idmethod func(ss *sfinterfaces.ISession) string,	interactiveMethod func(ss *sfinterfaces.ISession) bool ) sfinterfaces.ISession {
+	ss := new(Session)
+	ss.interactive = false
+	ss.SetInteractiveMethod(interactiveMethod)
+	ss.SetIDMethod(idmethod)
 	return ss
 }
 
 func NewInteractiveSession() sfinterfaces.ISession {
 	ss := NewSession()
-	ss.SetInteractive(true)
+	ss.interactive = true
 	return ss
 }
 
@@ -48,19 +57,19 @@ func (session *Session) GetShell() sfinterfaces.IShell {
 	return session.shell
 }
 
-func (session *Session) SetInteractiveMethod(interactiveMethod  func() bool) {
+func (session *Session) SetInteractiveMethod(interactiveMethod  func(ss *sfinterfaces.ISession) bool) {
 	session.interactiveMethod = interactiveMethod
 }
 
-func (session *Session) GetInteractiveMethod()  func() bool {
+func (session *Session) GetInteractiveMethod() func(ss *sfinterfaces.ISession) bool {
 	return session.interactiveMethod
 }
 
 
-func (session *Session) SetIDMethod(idmethod  func() string) {
+func (session *Session) SetIDMethod(idmethod  func(ss *sfinterfaces.ISession) string) {
 	session.idmethod = idmethod
 }
 
-func (session *Session) GetIDMethod()  func() string {
+func (session *Session) GetIDMethod()  func(ss *sfinterfaces.ISession) string {
 	return session.idmethod
 }

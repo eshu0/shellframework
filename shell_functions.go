@@ -42,8 +42,13 @@ func (shell *Shell) Print(msg string) {
 func (shell *Shell) PrintDetails() {
 	shell.Println("*****************************")
 	shell.Printlnf("Framework Version: %s", shell.GetVersion())
-	shell.Printlnf("Session: %s", shell.GetSession().ID())
-	shell.Printlnf("Iteractive: %t", shell.GetSession().GetInteractive())
+	session := shell.GetSession()
+
+	idmeth := session.GetIDMethod()
+	imeth := session.GetInteractiveMethod()
+
+	shell.Printlnf("Session: %s", idmeth(session))
+	shell.Printlnf("Iteractive: %t", imeth(session))
 	shell.Println("*****************************")
 	shell.Println("")
 }
@@ -51,7 +56,8 @@ func (shell *Shell) PrintDetails() {
 func (shell *Shell) PrintInputMessage() {
 	sess := shell.GetSession()
 	if !PointerInvalid(sess) {
-		shell.Printf("[%s]: ", sess.ID())
+		idmeth := sess.GetIDMethod()
+		shell.Printf("[%s]: ", idmeth(sess))
 	} else {
 		shell.Print("[Invalid session]: ")
 	}
