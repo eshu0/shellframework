@@ -471,80 +471,61 @@ func (shell *Shell) InteractiveSession(env sfinterfaces.IEnvironment, log sfinte
 				log.LogDebugf("InteractiveSession()", "GetSingleKey: %s", err.Error())
 				return
 			} else {
-				log.LogDebugf("InteractiveSession()", "key: %d char %s", key, char)
+				log.LogDebugf("InteractiveSession()", "key: %d char %d", key, char)
+					if(char != 0){
+							if key == keyboard.KeyArrowUp {
+								envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
+								if exists {
+									wc := envvar
+									lc := wc.GetValues()
+									if lastcommandpos >= len(lc)-1 {
+										shell.PrintInputMessage()
+										shell.Printf("%s", lc[lastcommandpos])
+										lastcommandpos = 0
+									} else {
+										shell.PrintInputMessage()
+										shell.Printf(" %s", lc[lastcommandpos])
+										lastcommandpos = lastcommandpos + 1
+									}
+								}
+							break
+						} else if key == keyboard.KeyArrowDown {
 
-				if key == keyboard.KeyArrowUp {
-	 			if !PointerInvalid(env) {
-	 				envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
-	 				if exists {
-	 					wc := envvar
-	 					lc := wc.GetValues()
-	 					if lastcommandpos >= len(lc)-1 {
-	 						shell.PrintInputMessage()
-	 						shell.Printf("%s", lc[lastcommandpos])
-	 						lastcommandpos = 0
-	 					} else {
-	 						shell.PrintInputMessage()
-	 						shell.Printf(" %s", lc[lastcommandpos])
-	 						lastcommandpos = lastcommandpos + 1
-	 					}
-	 				}
-	 			}
-	 		} else if key == keyboard.KeyArrowDown {
-	 			if !PointerInvalid(env) {
-	 				envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
-	 				if exists {
-	 					wc := envvar
-	 					lc := wc.GetValues()
-	 					if lastcommandpos >= len(lc)-1 {
-	 						shell.PrintInputMessage()
-	 						shell.Printf("%s", lc[lastcommandpos])
-	 						lastcommandpos = 0
-	 					} else {
-	 						shell.PrintInputMessage()
-	 						shell.Printf("%s", lc[lastcommandpos])
-	 						lastcommandpos = lastcommandpos - 1
-	 					}
-	 				}
+								envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
+								if exists {
+									wc := envvar
+									lc := wc.GetValues()
+									if lastcommandpos >= len(lc)-1 {
+										shell.PrintInputMessage()
+										shell.Printf("%s", lc[lastcommandpos])
+										lastcommandpos = 0
+									} else {
+										shell.PrintInputMessage()
+										shell.Printf("%s", lc[lastcommandpos])
+										lastcommandpos = lastcommandpos - 1
+									}
+								}
+							break
 
-	 			}
-	 		} else if key == keyboard.KeyEsc {
-	 			shell.Println("Exiting")
-	 			log.LogDebug("InteractiveSession()", "Exiting")
-	 			return
-	 		} else if key == keyboard.KeyEnter {
-	 			shell.Print("\n")
-	 			break
-	 		} else {
-	 			shell.Print(string(char))
-	 			text = text + string(char)
-	 		}
+						} else if key == keyboard.KeyEsc {
+							shell.Println("Exiting")
+							log.LogDebug("InteractiveSession()", "Exiting")
+							return
+						} else if key == keyboard.KeyEnter {
+							shell.Print("\n")
+							break
+						}
+					} else {
+		 			shell.Print(string(char))
+		 			text = text + string(char)
+		 			break
+		 		}
 			}
 
 
 		}
 
-		// pointer is valid?
-		if !PointerInvalid(env) {
-
-			env.AddStringValue(sfinterfaces.LastCommands, text)
-			/*
-				envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
-
-				if !exists {
-					var cmds []string
-					cmds = append(cmds, text)
-					env.SetVariable(env.MakeMultiVariable(sfinterfaces.LastCommands, cmds))
-				} else {
-					wc := envvar
-					lc := wc.GetValues()
-					lc = append(lc, text)
-					wc.SetValues(lc)
-					env.SetVariable(wc)
-				}
-			*/
-
-		}
+		env.AddStringValue(sfinterfaces.LastCommands, text)
 
 		executionorder := shell.ParseInput(text)
 
