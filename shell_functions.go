@@ -318,9 +318,12 @@ func (shell *Shell) Run() {
 	log := *shell.GetLog()
 	session := shell.GetSession()
 
-	var interactiveMethod func(ss sfinterfaces.ISession) bool
+	// first call
+	session.CallBuildIDMethod(shell)
 
+	var interactiveMethod func(ss sfinterfaces.ISession) bool
 	interactiveMethod = session.GetInteractiveMethod()
+
 	if interactiveMethod(session) {
 		shell.PrintDetails()
 		log.LogDebug("Run()", "Interactive Session")
@@ -340,6 +343,9 @@ func (shell *Shell) NonInteractiveSession(env sfinterfaces.IEnvironment, log sfi
 
 		// this keeps updating so let's keep it syncd
 		env = shell.GetEnvironment()
+
+		// get the session and build the ID
+		// it could be out of sync
 		session := shell.GetSession()
 	  session.CallBuildIDMethod(shell)
 
@@ -459,8 +465,12 @@ func (shell *Shell) InteractiveSession(env sfinterfaces.IEnvironment, log sfinte
 
 		// this keeps updating so let's keep it syncd
 		env = shell.GetEnvironment()
+
+		// get the session and build the ID
+		// it could be out of sync
 		session := shell.GetSession()
 	  session.CallBuildIDMethod(shell)
+
 		// print the input message
 		shell.PrintInputMessage()
 
