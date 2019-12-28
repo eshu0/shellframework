@@ -318,6 +318,7 @@ func (shell *Shell) Run() {
 	session := shell.GetSession()
 
 	if session.GetInteractive() {
+		log.LogDebug("Run()", "Interactive Session")
 		lastcommandpos := 0
 		for {
 
@@ -480,6 +481,8 @@ func (shell *Shell) Run() {
 		} // for loop
 
 	} else {
+		log.LogDebug("Run()", "Non-Interactive Session")
+
 		reader := bufio.NewReader(shell.in)
 		for {
 
