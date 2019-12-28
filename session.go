@@ -14,7 +14,7 @@ type Session struct {
 	id          string
 	//interactive bool
 	shell       sfinterfaces.IShell
-	idmethod func(ss sfinterfaces.ISession) string
+	builidmethod func(ss sfinterfaces.ISession)
 	interactiveMethod func(ss sfinterfaces.ISession) bool
 }
 
@@ -43,21 +43,21 @@ func DefaultInteractiveMethod(ss sfinterfaces.ISession) bool {
 // this is a very simple random string
 // this is just to uniquely identify each session
 // this is meant to be over written if needs be
-func NewSession(idmethod func(ss sfinterfaces.ISession) string,	interactiveMethod func(ss sfinterfaces.ISession) bool ) sfinterfaces.ISession {
+func NewSession(buildidmethod func(ss sfinterfaces.ISession),	interactiveMethod func(ss sfinterfaces.ISession) bool ) sfinterfaces.ISession {
 	ss := new(Session)
 	//ss.interactive = false
 	ss.SetInteractiveMethod(interactiveMethod)
-	ss.SetIDMethod(idmethod)
+	ss.SetBuildIDMethod(buildidmethod)
 	return ss
 }
 
-func NewDefaultInteractiveSession(idmethod func(ss sfinterfaces.ISession) string) sfinterfaces.ISession {
-	ss := NewSession(idmethod, DefaultInteractiveMethod)
+func NewDefaultInteractiveSession(buildidmethod func(ss sfinterfaces.ISession)) sfinterfaces.ISession {
+	ss := NewSession(buildidmethod, DefaultInteractiveMethod)
 	return ss
 }
 
-func NewDefaultNonInteractiveSession(idmethod func(ss sfinterfaces.ISession) string) sfinterfaces.ISession {
-	ss := NewSession(idmethod, DefaultNonInteractiveMethod)
+func NewDefaultNonInteractiveSession(buildidmethod func(ss sfinterfaces.ISession)) sfinterfaces.ISession {
+	ss := NewSession(buildidmethod, DefaultNonInteractiveMethod)
 	return ss
 }
 
@@ -84,6 +84,6 @@ func (session *Session) SetBuildIDMethod(builidmethod  func(ss sfinterfaces.ISes
 func (session *Session) ID() string {
 	return session.id
 }
-func (session *Session) SetID(id string) string {
+func (session *Session) SetID(id string) {
 	session.id = id
 }
