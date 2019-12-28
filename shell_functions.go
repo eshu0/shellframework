@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/eiannone/keyboard"
+	//"github.com/eiannone/keyboard"
 	"github.com/eshu0/shellframework/interfaces"
 )
 
@@ -446,6 +446,126 @@ func (shell *Shell) NonInteractiveSession(env sfinterfaces.IEnvironment, log sfi
 }
 
 func (shell *Shell) InteractiveSession(env sfinterfaces.IEnvironment, log sfinterfaces.IShellLogger) {
+	shouldcontinue := true
+	reader := bufio.NewReader(shell.in)
+	for {
+
+		// this keeps updating so let's keep it syncd
+		env = shell.GetEnvironment()
+
+		// print the input message
+		shell.PrintInputMessage()
+
+		// pointer is valid?
+		if !PointerInvalid(reader) {
+
+			// read the string input
+			text, readerr := reader.ReadString('\n')
+
+			if readerr != nil {
+				log.LogDebugf("InteractiveSession()", "Reading input has provided following err '%s'", readerr.Error())
+				break
+				// break out for loop
+			}
+
+			// convert CRLF to LF
+			text = strings.Replace(text, "\n", "", -1)
+
+			// pointer is valid?
+			if !PointerInvalid(env) && text != "" && (len(text) > 0 && text[0] != '#') {
+
+				env.AddStringValue(sfinterfaces.LastCommands, text)
+				/*
+					envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
+
+					if !exists {
+						var cmds []string
+						cmds = append(cmds, text)
+						env.SetVariable(env.MakeMultiVariable(sfinterfaces.LastCommands, cmds))
+					} else {
+						wc := envvar
+						lc := wc.GetValues()
+						lc = append(lc, text)
+						wc.SetValues(lc)
+						env.SetVariable(wc)
+					}
+				*/
+			}
+
+			executionorder := shell.ParseInput(text)
+
+			var cmdres string
+			endexecution := false
+			for _, ec := range executionorder {
+
+				log.LogDebugf("InteractiveSession()", "Found '%s' execution command  ", ec.GetCommandName())
+				if endexecution {
+					break
+				}
+
+				if cmdres != "" {
+					log.LogDebugf("InteractiveSession()", "Previous command finished with result %s override the args", cmdres)
+					var pargs []string
+					pargs = append(pargs, cmdres)
+					ec.SetArgs(pargs)
+				}
+
+				// walk commands in shell
+				for _, cmd := range shell.GetCommands() {
+					// This command matched
+					if cmd.Match(ec) {
+						// not sure this is the best thing to do
+						// this could be made more comperhensive
+						// we set this here so prasing doesn;t affect the input
+						cmd.SetCommandInput(ec)
+
+						res := cmd.Process()
+
+						if res.ExitShell() {
+							shouldcontinue = false
+						} else {
+
+							if res.Sucessful() {
+								cmdres = res.Result()
+							} else {
+								err := res.Err()
+								if err != nil {
+									shell.Printlnf("'%s' failed: %s ", cmd.GetName(), err.Error())
+									log.LogDebugf("InteractiveSession()", "Error with command '%s' following error provided: %s ", cmd.GetName(), err.Error())
+								} else {
+									shell.Printlnf("Error with command '%s' no error provided ", cmd.GetName())
+									log.LogDebugf("InteractiveSession()", "Error with command '%s' no error provided  ", cmd.GetName())
+								}
+								endexecution = true
+							}
+
+						}
+
+						break
+					}
+				}
+			}
+
+			if !shouldcontinue {
+				shell.Println("Exiting")
+				log.LogDebug("InteractiveSession()", "Exiting")
+				break
+			}
+
+		} else {
+
+			log.LogDebug("InteractiveSession()", "Reader is nil")
+			shouldcontinue = false
+		}
+
+		if !PointerInvalid(env) {
+			env.SaveToFile(sfinterfaces.EnvironmentFilename)
+		}
+
+	} // for loop
+}
+/*
+func (shell *Shell) InteractiveSession(env sfinterfaces.IEnvironment, log sfinterfaces.IShellLogger) {
 	lastcommandpos := 0
 	shouldcontinue := true
 	for {
@@ -472,24 +592,27 @@ func (shell *Shell) InteractiveSession(env sfinterfaces.IEnvironment, log sfinte
 				return
 			} else {
 				log.LogDebugf("InteractiveSession()", "key: %d char %d", key, char)
-					if(char != 0){
-							if key == keyboard.KeyArrowUp {
-								envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
-								if exists {
-									wc := envvar
-									lc := wc.GetValues()
-									if lastcommandpos >= len(lc)-1 {
-										shell.PrintInputMessage()
-										shell.Printf("%s", lc[lastcommandpos])
-										lastcommandpos = 0
-									} else {
-										shell.PrintInputMessage()
-										shell.Printf(" %s", lc[lastcommandpos])
-										lastcommandpos = lastcommandpos + 1
+					if(key != 0){
+
+						switch(key){
+							case keyboard.KeyArrowUp {
+									envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
+									if exists {
+										wc := envvar
+										lc := wc.GetValues()
+										if lastcommandpos >= len(lc)-1 {
+											shell.PrintInputMessage()
+											shell.Printf("%s", lc[lastcommandpos])
+											lastcommandpos = 0
+										} else {
+											shell.PrintInputMessage()
+											shell.Printf(" %s", lc[lastcommandpos])
+											lastcommandpos = lastcommandpos + 1
+										}
 									}
-								}
-							break
-						} else if key == keyboard.KeyArrowDown {
+								break
+							}
+							case keyboard.KeyArrowDown {
 
 								envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
 								if exists {
@@ -506,22 +629,24 @@ func (shell *Shell) InteractiveSession(env sfinterfaces.IEnvironment, log sfinte
 									}
 								}
 							break
+							}
 
-						} else if key == keyboard.KeyEsc {
-							shell.Println("Exiting")
-							log.LogDebug("InteractiveSession()", "Exiting")
-							return
-						} else if key == keyboard.KeyEnter {
-							shell.Print("\n")
-							break
-						}
+							case keyboard.KeyEsc {
+								shell.Println("Exiting")
+								log.LogDebug("InteractiveSession()", "Exiting")
+								return
+							}
+							case keyboard.KeyEsc {
+									shell.Print("\n")
+									break
+								}
+							}
+
 					} else {
 		 			shell.Print(string(char))
 		 			text = text + string(char)
-		 			break
 		 		}
 			}
-
 
 		}
 
@@ -598,7 +723,7 @@ func (shell *Shell) InteractiveSession(env sfinterfaces.IEnvironment, log sfinte
 
 	} // for loop
 }
-
+*/
 //
 // Commands adding etc
 //
@@ -636,7 +761,6 @@ func (shell *Shell) AddCommands(commands []sfinterfaces.ICommand) {
 			shell.AddCommand(cmd)
 		}
 	}
-
 }
 
 func (shell *Shell) RegisterNewCommandWithFlags(name string, description string, operator func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult, flags []sfinterfaces.IFlag) {
