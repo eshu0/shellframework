@@ -34,6 +34,8 @@ type IShell interface {
 
 	//methods run the shell
 	Run()
+	NonInteractiveSession(env IEnvironment, log IShellLogger)
+	InteractiveSession(env IEnvironment, log IShellLogger)
 
 	ParseInput(input string) []ICommandInput
 

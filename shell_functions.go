@@ -314,81 +314,45 @@ func (shell *Shell) Run() {
 
 	shell.PrintDetails()
 	log := *shell.GetLog()
-	shouldcontinue := true
 	session := shell.GetSession()
 
 	if session.GetInteractive() {
 		log.LogDebug("Run()", "Interactive Session")
-		lastcommandpos := 0
-		for {
+		shell.InteractiveSession(env, log)
 
-			// this keeps updating so let's keep it syncd
-			env = shell.GetEnvironment()
+	} else {
+		log.LogDebug("Run()", "Non-Interactive Session")
 
-			// print the input message
-			shell.PrintInputMessage()
+		shell.NonInteractiveSession(env, log)
+	}
 
-			kerr := keyboard.Open()
-			if kerr != nil {
-				panic(kerr)
+}
+
+func (shell *Shell) NonInteractiveSession(env sfinterfaces.IEnvironment, log sfinterfaces.IShellLogger) {
+	shouldcontinue := true
+	reader := bufio.NewReader(shell.in)
+	for {
+
+		// this keeps updating so let's keep it syncd
+		env = shell.GetEnvironment()
+
+		// pointer is valid?
+		if !PointerInvalid(reader) {
+
+			// read the string input
+			text, readerr := reader.ReadString('\n')
+
+			if readerr != nil {
+				log.LogDebugf("NonInteractiveSession()", "Reading input has provided following err '%s'", readerr.Error())
+				break
+				// break out for loop
 			}
-			defer keyboard.Close()
-			text := ""
-			for {
-				char, key, err := keyboard.GetSingleKey() // keyboard.GetKey()
-				if err != nil {
-					panic(err)
-				} else if key == keyboard.KeyArrowUp {
-					if !PointerInvalid(env) {
-						envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
-						if exists {
-							wc := envvar
-							lc := wc.GetValues()
-							if lastcommandpos >= len(lc)-1 {
-								shell.PrintInputMessage()
-								shell.Printf("%s", lc[lastcommandpos])
-								lastcommandpos = 0
-							} else {
-								shell.PrintInputMessage()
-								shell.Printf(" %s", lc[lastcommandpos])
-								lastcommandpos = lastcommandpos + 1
-							}
-						}
-					}
-				} else if key == keyboard.KeyArrowDown {
-					if !PointerInvalid(env) {
-						envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
-						if exists {
-							wc := envvar
-							lc := wc.GetValues()
-							if lastcommandpos >= len(lc)-1 {
-								shell.PrintInputMessage()
-								shell.Printf("%s", lc[lastcommandpos])
-								lastcommandpos = 0
-							} else {
-								shell.PrintInputMessage()
-								shell.Printf("%s", lc[lastcommandpos])
-								lastcommandpos = lastcommandpos - 1
-							}
-						}
 
-					}
-				} else if key == keyboard.KeyEsc {
-					shell.Println("Exiting")
-					log.LogDebug("Run()", "Exiting")
-					return
-				} else if key == keyboard.KeyEnter {
-					shell.Print("\n")
-					break
-				} else {
-					shell.Print(string(char))
-					text = text + string(char)
-				}
-
-			}
+			// convert CRLF to LF
+			text = strings.Replace(text, "\n", "", -1)
 
 			// pointer is valid?
-			if !PointerInvalid(env) {
+			if !PointerInvalid(env) && text != "" && (len(text) > 0 && text[0] != '#') {
 
 				env.AddStringValue(sfinterfaces.LastCommands, text)
 				/*
@@ -406,7 +370,6 @@ func (shell *Shell) Run() {
 						env.SetVariable(wc)
 					}
 				*/
-
 			}
 
 			executionorder := shell.ParseInput(text)
@@ -415,13 +378,13 @@ func (shell *Shell) Run() {
 			endexecution := false
 			for _, ec := range executionorder {
 
-				log.LogDebugf("Run()", "Found '%s' execution command  ", ec.GetCommandName())
+				log.LogDebugf("NonInteractiveSession()", "Found '%s' execution command  ", ec.GetCommandName())
 				if endexecution {
 					break
 				}
 
 				if cmdres != "" {
-					log.LogDebugf("Run()", "Previous command finished with result %s override the args", cmdres)
+					log.LogDebugf("NonInteractiveSession()", "Previous command finished with result %s override the args", cmdres)
 					var pargs []string
 					pargs = append(pargs, cmdres)
 					ec.SetArgs(pargs)
@@ -434,29 +397,24 @@ func (shell *Shell) Run() {
 						// not sure this is the best thing to do
 						// this could be made more comperhensive
 						// we set this here so prasing doesn;t affect the input
-						log.LogDebugf("Run()", "Started SetCommandInput for '%s' ", cmd.GetName())
 						cmd.SetCommandInput(ec)
-						log.LogDebugf("Run()", "Finished SetCommandInput for '%s' ", cmd.GetName())
 
-						log.LogDebugf("Run()", "Started command '%s' ", cmd.GetName())
 						res := cmd.Process()
-						log.LogDebugf("Run()", "Finished command '%s'  ", cmd.GetName())
 
 						if res.ExitShell() {
 							shouldcontinue = false
 						} else {
 
 							if res.Sucessful() {
-								log.LogDebugf("Run()", "Command '%s' was sucessful ", cmd.GetName())
 								cmdres = res.Result()
 							} else {
 								err := res.Err()
 								if err != nil {
 									shell.Printlnf("'%s' failed: %s ", cmd.GetName(), err.Error())
-									log.LogDebugf("Run()", "Error with command '%s' following error provided: %s ", cmd.GetName(), err.Error())
+									log.LogDebugf("NonInteractiveSession()", "Error with command '%s' following error provided: %s ", cmd.GetName(), err.Error())
 								} else {
 									shell.Printlnf("Error with command '%s' no error provided ", cmd.GetName())
-									log.LogDebugf("Run()", "Error with command '%s' no error provided  ", cmd.GetName())
+									log.LogDebugf("NonInteractiveSession()", "Error with command '%s' no error provided  ", cmd.GetName())
 								}
 								endexecution = true
 							}
@@ -470,137 +428,185 @@ func (shell *Shell) Run() {
 
 			if !shouldcontinue {
 				shell.Println("Exiting")
-				log.LogDebug("Run()", "Exiting")
+				log.LogDebug("NonInteractiveSession()", "Exiting")
 				break
 			}
 
-			if !PointerInvalid(env) {
-				env.SaveToFile(sfinterfaces.EnvironmentFilename)
-			}
+		} else {
 
-		} // for loop
+			log.LogDebug("NonInteractiveSession()", "Reader is nil")
+			shouldcontinue = false
+		}
 
-	} else {
-		log.LogDebug("Run()", "Non-Interactive Session")
+		if !PointerInvalid(env) {
+			env.SaveToFile(sfinterfaces.EnvironmentFilename)
+		}
 
-		reader := bufio.NewReader(shell.in)
+	} // for loop
+}
+
+func (shell *Shell) InteractiveSession(env sfinterfaces.IEnvironment, log sfinterfaces.IShellLogger) {
+	lastcommandpos := 0
+	shouldcontinue := true
+	for {
+
+		// this keeps updating so let's keep it syncd
+		env = shell.GetEnvironment()
+
+		// print the input message
+		shell.PrintInputMessage()
+
+		kerr := keyboard.Open()
+		if kerr != nil {
+			panic(kerr)
+		}
+		defer keyboard.Close()
+		text := ""
 		for {
-
-			// this keeps updating so let's keep it syncd
-			env = shell.GetEnvironment()
-
-			// pointer is valid?
-			if !PointerInvalid(reader) {
-
-				// print the input message
-				shell.PrintInputMessage()
-
-				// read the string input
-				text, readerr := reader.ReadString('\n')
-
-				if readerr != nil {
-					log.LogDebugf("Run()", "Reading input has provided following err '%s'", readerr.Error())
-					break
-					// break out for loop
-				}
-
-				// convert CRLF to LF
-				text = strings.Replace(text, "\n", "", -1)
-
-				// pointer is valid?
-				if !PointerInvalid(env) && text != "" && (len(text) > 0 && text[0] != '#') {
-
-					env.AddStringValue(sfinterfaces.LastCommands, text)
-					/*
-						envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
-
-						if !exists {
-							var cmds []string
-							cmds = append(cmds, text)
-							env.SetVariable(env.MakeMultiVariable(sfinterfaces.LastCommands, cmds))
+			char, key, err := keyboard.GetSingleKey() // keyboard.GetKey()
+			if err != nil {
+				panic(err)
+			} else if key == keyboard.KeyArrowUp {
+				if !PointerInvalid(env) {
+					envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
+					if exists {
+						wc := envvar
+						lc := wc.GetValues()
+						if lastcommandpos >= len(lc)-1 {
+							shell.PrintInputMessage()
+							shell.Printf("%s", lc[lastcommandpos])
+							lastcommandpos = 0
 						} else {
-							wc := envvar
-							lc := wc.GetValues()
-							lc = append(lc, text)
-							wc.SetValues(lc)
-							env.SetVariable(wc)
+							shell.PrintInputMessage()
+							shell.Printf(" %s", lc[lastcommandpos])
+							lastcommandpos = lastcommandpos + 1
 						}
-					*/
+					}
 				}
-
-				executionorder := shell.ParseInput(text)
-
-				var cmdres string
-				endexecution := false
-				for _, ec := range executionorder {
-
-					log.LogDebugf("Run()", "Found '%s' execution command  ", ec.GetCommandName())
-					if endexecution {
-						break
+			} else if key == keyboard.KeyArrowDown {
+				if !PointerInvalid(env) {
+					envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
+					if exists {
+						wc := envvar
+						lc := wc.GetValues()
+						if lastcommandpos >= len(lc)-1 {
+							shell.PrintInputMessage()
+							shell.Printf("%s", lc[lastcommandpos])
+							lastcommandpos = 0
+						} else {
+							shell.PrintInputMessage()
+							shell.Printf("%s", lc[lastcommandpos])
+							lastcommandpos = lastcommandpos - 1
+						}
 					}
 
-					if cmdres != "" {
-						log.LogDebugf("Run()", "Previous command finished with result %s override the args", cmdres)
-						var pargs []string
-						pargs = append(pargs, cmdres)
-						ec.SetArgs(pargs)
-					}
+				}
+			} else if key == keyboard.KeyEsc {
+				shell.Println("Exiting")
+				log.LogDebug("InteractiveSession()", "Exiting")
+				return
+			} else if key == keyboard.KeyEnter {
+				shell.Print("\n")
+				break
+			} else {
+				shell.Print(string(char))
+				text = text + string(char)
+			}
 
-					// walk commands in shell
-					for _, cmd := range shell.GetCommands() {
-						// This command matched
-						if cmd.Match(ec) {
-							// not sure this is the best thing to do
-							// this could be made more comperhensive
-							// we set this here so prasing doesn;t affect the input
-							cmd.SetCommandInput(ec)
+		}
 
-							res := cmd.Process()
+		// pointer is valid?
+		if !PointerInvalid(env) {
 
-							if res.ExitShell() {
-								shouldcontinue = false
+			env.AddStringValue(sfinterfaces.LastCommands, text)
+			/*
+				envvar, exists := env.GetVariable(sfinterfaces.LastCommands)
+
+				if !exists {
+					var cmds []string
+					cmds = append(cmds, text)
+					env.SetVariable(env.MakeMultiVariable(sfinterfaces.LastCommands, cmds))
+				} else {
+					wc := envvar
+					lc := wc.GetValues()
+					lc = append(lc, text)
+					wc.SetValues(lc)
+					env.SetVariable(wc)
+				}
+			*/
+
+		}
+
+		executionorder := shell.ParseInput(text)
+
+		var cmdres string
+		endexecution := false
+		for _, ec := range executionorder {
+
+			log.LogDebugf("InteractiveSession()", "Found '%s' execution command  ", ec.GetCommandName())
+			if endexecution {
+				break
+			}
+
+			if cmdres != "" {
+				log.LogDebugf("InteractiveSession()", "Previous command finished with result %s override the args", cmdres)
+				var pargs []string
+				pargs = append(pargs, cmdres)
+				ec.SetArgs(pargs)
+			}
+
+			// walk commands in shell
+			for _, cmd := range shell.GetCommands() {
+				// This command matched
+				if cmd.Match(ec) {
+					// not sure this is the best thing to do
+					// this could be made more comperhensive
+					// we set this here so prasing doesn;t affect the input
+					log.LogDebugf("InteractiveSession()", "Started SetCommandInput for '%s' ", cmd.GetName())
+					cmd.SetCommandInput(ec)
+					log.LogDebugf("InteractiveSession()", "Finished SetCommandInput for '%s' ", cmd.GetName())
+
+					log.LogDebugf("InteractiveSession()", "Started command '%s' ", cmd.GetName())
+					res := cmd.Process()
+					log.LogDebugf("InteractiveSession()", "Finished command '%s'  ", cmd.GetName())
+
+					if res.ExitShell() {
+						shouldcontinue = false
+					} else {
+
+						if res.Sucessful() {
+							log.LogDebugf("InteractiveSession()", "Command '%s' was sucessful ", cmd.GetName())
+							cmdres = res.Result()
+						} else {
+							err := res.Err()
+							if err != nil {
+								shell.Printlnf("'%s' failed: %s ", cmd.GetName(), err.Error())
+								log.LogDebugf("InteractiveSession()", "Error with command '%s' following error provided: %s ", cmd.GetName(), err.Error())
 							} else {
-
-								if res.Sucessful() {
-									cmdres = res.Result()
-								} else {
-									err := res.Err()
-									if err != nil {
-										shell.Printlnf("'%s' failed: %s ", cmd.GetName(), err.Error())
-										log.LogDebugf("Run()", "Error with command '%s' following error provided: %s ", cmd.GetName(), err.Error())
-									} else {
-										shell.Printlnf("Error with command '%s' no error provided ", cmd.GetName())
-										log.LogDebugf("Run()", "Error with command '%s' no error provided  ", cmd.GetName())
-									}
-									endexecution = true
-								}
-
+								shell.Printlnf("Error with command '%s' no error provided ", cmd.GetName())
+								log.LogDebugf("InteractiveSession()", "Error with command '%s' no error provided  ", cmd.GetName())
 							}
-
-							break
+							endexecution = true
 						}
-					}
-				}
 
-				if !shouldcontinue {
-					shell.Println("Exiting")
-					log.LogDebug("Run()", "Exiting")
+					}
+
 					break
 				}
-
-			} else {
-
-				log.LogDebug("Run()", "Reader is nil")
-				shouldcontinue = false
 			}
+		}
 
-			if !PointerInvalid(env) {
-				env.SaveToFile(sfinterfaces.EnvironmentFilename)
-			}
+		if !shouldcontinue {
+			shell.Println("Exiting")
+			log.LogDebug("Run()", "Exiting")
+			break
+		}
 
-		} // for loop
-	}
+		if !PointerInvalid(env) {
+			env.SaveToFile(sfinterfaces.EnvironmentFilename)
+		}
 
+	} // for loop
 }
 
 //
