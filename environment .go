@@ -10,6 +10,7 @@ import (
 )
 
 type Environment struct {
+	sfinterfaces.IEnvironment
 	shell      sfinterfaces.IShell
 	namevalues map[string]sfinterfaces.IEnvironmentVariable
 }

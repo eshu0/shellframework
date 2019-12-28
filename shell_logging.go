@@ -10,6 +10,7 @@ import (
 )
 
 type ShellLogger struct {
+	sfinterfaces.IShellLogger
 	loglevel kitlevel.Option
 	log      kitlog.Logger
 }

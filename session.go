@@ -10,6 +10,7 @@ import (
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 type Session struct {
+	sfinterfaces.ISession
 	id          string
 	interactive bool
 	shell       sfinterfaces.IShell

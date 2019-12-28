@@ -8,12 +8,14 @@ import (
 )
 
 type CommandFlags struct {
+	sfinterfaces.IFlags
 	command     sfinterfaces.ICommand
 	parsedflags map[string]sfinterfaces.IFlag
 	flags       []sfinterfaces.IFlag
 }
 
 type CommandFlag struct {
+	sfinterfaces.IFlag
 	name  string
 	usage string
 

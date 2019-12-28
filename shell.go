@@ -8,6 +8,7 @@ import (
 )
 
 type Shell struct {
+	sfinterfaces.IShell
 	commands    []sfinterfaces.ICommand
 	environment *sfinterfaces.IEnvironment
 	version     string

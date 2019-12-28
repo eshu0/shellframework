@@ -8,6 +8,7 @@ import (
 )
 
 type Command struct {
+	sfinterfaces.ICommand
 	name         string
 	description  string
 	operator     func(command sfinterfaces.ICommand) sfinterfaces.ICommandResult
