@@ -12,7 +12,7 @@ var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 type Session struct {
 	sfinterfaces.ISession
 	id          string
-	interactive bool
+	//interactive bool
 	shell       sfinterfaces.IShell
 	idmethod func(ss sfinterfaces.ISession) string
 	interactiveMethod func(ss sfinterfaces.ISession) bool
@@ -29,14 +29,16 @@ func DefaultIDMethod(ss *Session) string {
 }
 
 
-func DefaultNonInteractiveMethod(ss Session) bool {
-	ss.interactive = false
-	return ss.interactive
+func DefaultNonInteractiveMethod(ss sfinterfaces.ISession) bool {
+//	ss.interactive = false
+//	return ss.interactive
+	return false
 }
 
-func DefaultInteractiveMethod(ss Session) bool {
-	ss.interactive = true
-	return ss.interactive
+func DefaultInteractiveMethod(ss sfinterfaces.ISession) bool {
+//	ss.interactive = true
+//	return ss.interactive
+	return true
 }
 
 // this is a very simple random string
@@ -44,7 +46,7 @@ func DefaultInteractiveMethod(ss Session) bool {
 // this is meant to be over written if needs be
 func NewSession(idmethod func(ss sfinterfaces.ISession) string,	interactiveMethod func(ss sfinterfaces.ISession) bool ) sfinterfaces.ISession {
 	ss := new(Session)
-	ss.interactive = false
+	//ss.interactive = false
 	ss.SetInteractiveMethod(interactiveMethod)
 	ss.SetIDMethod(idmethod)
 	return ss

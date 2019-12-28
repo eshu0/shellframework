@@ -322,10 +322,10 @@ func (shell *Shell) Run() {
 	log := *shell.GetLog()
 	session := shell.GetSession()
 
-	var interactiveMethod func() bool
+	var interactiveMethod func(ss sfinterfaces.ISession) bool
 
 	interactiveMethod = session.GetInteractiveMethod()
-	if interactiveMethod() {
+	if interactiveMethod(session) {
 		shell.PrintDetails()
 		log.LogDebug("Run()", "Interactive Session")
 		shell.InteractiveSession(env, log)
