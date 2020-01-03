@@ -2,6 +2,7 @@ package sfinterfaces
 
 import (
 	"os"
+	"github.com/eshu0/simplelogger/interfaces"
 )
 
 // this is the Shell version
@@ -24,8 +25,8 @@ type IShell interface {
 	GetVersion() string
 
 	// logging
-	GetLog() *IShellLogger
-	SetLog(log IShellLogger)
+	GetLog() *slinterfaces.ISimpleLogger
+	SetLog(log slinterfaces.ISimpleLogger)
 
 	// in and out
 	GetIn() *os.File
@@ -34,8 +35,8 @@ type IShell interface {
 
 	//methods run the shell
 	Run()
-	NonInteractiveSession(env IEnvironment, log IShellLogger)
-	InteractiveSession(env IEnvironment, log IShellLogger)
+	NonInteractiveSession(env IEnvironment, log  slinterfaces.ISimpleLogger)
+	InteractiveSession(env IEnvironment, log  slinterfaces.ISimpleLogger)
 
 	ParseInput(input string) []ICommandInput
 

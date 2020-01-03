@@ -7,6 +7,7 @@ import (
 
 	//"github.com/eiannone/keyboard"
 	"github.com/eshu0/shellframework/interfaces"
+	"github.com/eshu0/simplelogger/interfaces"
 )
 
 //
@@ -336,7 +337,7 @@ func (shell *Shell) Run() {
 
 }
 
-func (shell *Shell) NonInteractiveSession(env sfinterfaces.IEnvironment, log sfinterfaces.IShellLogger) {
+func (shell *Shell) NonInteractiveSession(env sfinterfaces.IEnvironment, log slinterfaces.ISimpleLogger) {
 	shouldcontinue := true
 	reader := bufio.NewReader(shell.in)
 	for {
@@ -458,7 +459,7 @@ func (shell *Shell) NonInteractiveSession(env sfinterfaces.IEnvironment, log sfi
 	} // for loop
 }
 
-func (shell *Shell) InteractiveSession(env sfinterfaces.IEnvironment, log sfinterfaces.IShellLogger) {
+func (shell *Shell) InteractiveSession(env sfinterfaces.IEnvironment, log  slinterfaces.ISimpleLogger) {
 	shouldcontinue := true
 	reader := bufio.NewReader(shell.in)
 	for {

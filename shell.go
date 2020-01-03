@@ -5,6 +5,7 @@ import (
 
 	"github.com/eshu0/shellframework/defaultcmds"
 	"github.com/eshu0/shellframework/interfaces"
+	"github.com/eshu0/simplelogger/interfaces"
 )
 
 type Shell struct {
@@ -14,13 +15,13 @@ type Shell struct {
 	version     string
 	session     *sfinterfaces.ISession
 
-	log *sfinterfaces.IShellLogger
+	log *slinterfaces.ISimpleLogger
 	in  *os.File
 	out *os.File
 	err *os.File
 }
 
-func NewShellFromFile(session sfinterfaces.ISession,scriptinfilepath string, Out *os.File, Err *os.File, logi sfinterfaces.IShellLogger) *Shell {
+func NewShellFromFile(session sfinterfaces.ISession,scriptinfilepath string, Out *os.File, Err *os.File, logi slinterfaces.ISimpleLogger) *Shell {
 
 	var input *os.File
 
@@ -48,7 +49,7 @@ func NewShellFromFile(session sfinterfaces.ISession,scriptinfilepath string, Out
 	return shell
 }
 
-func NewShell(session sfinterfaces.ISession, In *os.File, Out *os.File, Err *os.File, logi sfinterfaces.IShellLogger) *Shell {
+func NewShell(session sfinterfaces.ISession, In *os.File, Out *os.File, Err *os.File, logi slinterfaces.ISimpleLogger) *Shell {
 
 	shell := &Shell{}
 
@@ -135,10 +136,10 @@ func (shell *Shell) GetErr() *os.File {
 // these function provide logging to the choosen logfile
 //
 
-func (shell *Shell) SetLog(logger sfinterfaces.IShellLogger) {
+func (shell *Shell) SetLog(logger slinterfaces.ISimpleLogger) {
 	shell.log = &logger
 }
 
-func (shell *Shell) GetLog() *sfinterfaces.IShellLogger {
+func (shell *Shell) GetLog() *slinterfaces.ISimpleLogger {
 	return shell.log
 }
